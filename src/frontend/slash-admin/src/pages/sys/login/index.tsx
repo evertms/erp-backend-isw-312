@@ -6,17 +6,12 @@ import SettingButton from "@/layouts/components/setting-button";
 import { useUserToken } from "@/store/userStore";
 import { Navigate } from "react-router";
 import LoginForm from "./login-form";
-import MobileForm from "./mobile-form";
-import { LoginProvider } from "./providers/login-provider";
-import QrCodeFrom from "./qrcode-form";
-import RegisterForm from "./register-form";
-import ResetForm from "./reset-form";
 
 function LoginPage() {
 	const token = useUserToken();
 
 	if (token.accessToken) {
-		return <Navigate to={GLOBAL_CONFIG.defaultRoute} replace />;
+		return <Navigate to={`/dashboard/${token.accessToken}`} replace />;
 	}
 
 	return (
@@ -30,13 +25,7 @@ function LoginPage() {
 				</div>
 				<div className="flex flex-1 items-center justify-center">
 					<div className="w-full max-w-xs">
-						<LoginProvider>
-							<LoginForm />
-							<MobileForm />
-							<QrCodeFrom />
-							<RegisterForm />
-							<ResetForm />
-						</LoginProvider>
+						<LoginForm />
 					</div>
 				</div>
 			</div>

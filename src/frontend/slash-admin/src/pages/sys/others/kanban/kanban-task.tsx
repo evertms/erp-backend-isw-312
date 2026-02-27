@@ -68,7 +68,7 @@ function KanbanTask({ id, task, isDragging }: Props) {
 						<div className="flex items-center justify-between">
 							<div>
 								<Select defaultValue="To do">
-									<SelectTrigger size="default">
+									<SelectTrigger>
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>

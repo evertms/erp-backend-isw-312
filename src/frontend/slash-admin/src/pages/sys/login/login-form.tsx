@@ -1,46 +1,83 @@
-import { DB_USER } from "@/_mock/assets_backup";
-import type { SignInReq } from "@/api/services/userService";
-import { Icon } from "@/components/icon";
-import { GLOBAL_CONFIG } from "@/global-config";
-import { useSignIn } from "@/store/userStore";
 import { Button } from "@/ui/button";
-import { Checkbox } from "@/ui/checkbox";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/ui/form";
-import { Input } from "@/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select";
+import { Skeleton } from "@/ui/skeleton";
+import { useUserActions } from "@/store/userStore";
 import { cn } from "@/utils";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { LoginStateEnum, useLoginStateContext } from "./providers/login-provider";
+
+type Company = {
+	id: string;
+	name: string;
+	imageUrl: string | null;
+};
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
-	const { t } = useTranslation();
 	const [loading, setLoading] = useState(false);
-	const [remember, setRemember] = useState(true);
-	const navigatge = useNavigate();
+	const [fetching, setFetching] = useState(true);
+	const [companies, setCompanies] = useState<Company[]>([]);
+	const [selectedCompanyId, setSelectedCompanyId] = useState<string>("");
+	
+	const navigate = useNavigate();
+	const { setUserToken, setUserInfo } = useUserActions();
 
-	const { loginState, setLoginState } = useLoginStateContext();
-	const signIn = useSignIn();
+	useEffect(() => {
+		// Llamada a la API de empresas (US-01)
+		fetch("http://localhost:5293/api/companies")
+			.then((res) => {
+				if (!res.ok) throw new Error("Fallo al cargar las empresas");
+				return res.json();
+			})
+			.then((data: Company[]) => {
+				setCompanies(data);
+			})
+			.catch((err) => {
+				toast.error("Error conectando con el servidor", {
+					description: err.message,
+				});
+			})
+			.finally(() => {
+				setFetching(false);
+			});
+	}, []);
 
-	const form = useForm<SignInReq>({
-		defaultValues: {
-			username: DB_USER[0].username,
-			password: DB_USER[0].password,
-		},
-	});
+	const handleFinish = async (e: React.FormEvent) => {
+		e.preventDefault();
+		
+		if (!selectedCompanyId) {
+			toast.error("Por favor selecciona una empresa primero");
+			return;
+		}
 
-	if (loginState !== LoginStateEnum.LOGIN) return null;
-
-	const handleFinish = async (values: SignInReq) => {
 		setLoading(true);
+		
 		try {
-			await signIn(values);
-			navigatge(GLOBAL_CONFIG.defaultRoute, { replace: true });
-			toast.success(t("sys.login.loginSuccessTitle"), {
-				closeButton: true,
+			const company = companies.find(c => c.id === selectedCompanyId);
+			if (!company) throw new Error("Empresa no encontrada");
+
+			// Simulamos el Login usando el CompanyID como token de acceso y un usuario genérico
+			setUserToken({ accessToken: selectedCompanyId, refreshToken: selectedCompanyId });
+			
+			setUserInfo({ 
+				id: selectedCompanyId, 
+				username: "Operador de Inventario",
+				email: "operador@empresa.com",
+				avatar: company.imageUrl || "",
+				roles: ["admin"] as any,
+				permissions: ["sys.menu.dashboard"] as any
+			});
+			
+			// Redirige al Dashboard usando el ID
+			navigate(`/dashboard/${selectedCompanyId}`, { replace: true });
+			
+			toast.success("Empresa seleccionada con éxito", {
+				description: `Ingresando al inventario de ${company.name}`
+			});
+		} catch (err: any) {
+			toast.error(err.message, {
+				position: "top-center",
 			});
 		} finally {
 			setLoading(false);
@@ -49,106 +86,39 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
 	return (
 		<div className={cn("flex flex-col gap-6", className)}>
-			<Form {...form} {...props}>
-				<form onSubmit={form.handleSubmit(handleFinish)} className="space-y-4">
-					<div className="flex flex-col items-center gap-2 text-center">
-						<h1 className="text-2xl font-bold">{t("sys.login.signInFormTitle")}</h1>
-						<p className="text-balance text-sm text-muted-foreground">{t("sys.login.signInFormDescription")}</p>
-					</div>
+			<form onSubmit={handleFinish} className="space-y-6" {...props}>
+				<div className="flex flex-col items-center gap-2 text-center">
+					<h1 className="text-2xl font-bold">Bienvenido</h1>
+					<p className="text-balance text-sm text-muted-foreground">
+						Selecciona una empresa para continuar
+					</p>
+				</div>
 
-					<FormField
-						control={form.control}
-						name="username"
-						rules={{ required: t("sys.login.accountPlaceholder") }}
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>{t("sys.login.userName")}</FormLabel>
-								<FormControl>
-									<Input placeholder={DB_USER.map((user) => user.username).join("/")} {...field} />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+				<div className="space-y-4">
+					{fetching ? (
+						<Skeleton className="h-10 w-full rounded-md" />
+					) : (
+						<Select value={selectedCompanyId} onValueChange={setSelectedCompanyId}>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Seleccione una compañía..." />
+							</SelectTrigger>
+							<SelectContent>
+								{companies.map((company) => (
+									<SelectItem key={company.id} value={company.id}>
+										{company.name}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					)}
+				</div>
 
-					<FormField
-						control={form.control}
-						name="password"
-						rules={{ required: t("sys.login.passwordPlaceholder") }}
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>{t("sys.login.password")}</FormLabel>
-								<FormControl>
-									<Input type="password" placeholder={DB_USER[0].password} {...field} suppressHydrationWarning />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-
-					{/* 记住我/忘记密码 */}
-					<div className="flex flex-row justify-between">
-						<div className="flex items-center space-x-2">
-							<Checkbox
-								id="remember"
-								checked={remember}
-								onCheckedChange={(checked) => setRemember(checked === "indeterminate" ? false : checked)}
-							/>
-							<label
-								htmlFor="remember"
-								className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-							>
-								{t("sys.login.rememberMe")}
-							</label>
-						</div>
-						<Button variant="link" onClick={() => setLoginState(LoginStateEnum.RESET_PASSWORD)} size="sm">
-							{t("sys.login.forgetPassword")}
-						</Button>
-					</div>
-
-					{/* 登录按钮 */}
-					<Button type="submit" className="w-full">
-						{loading && <Loader2 className="animate-spin mr-2" />}
-						{t("sys.login.loginButton")}
-					</Button>
-
-					{/* 手机登录/二维码登录 */}
-					<div className="grid gap-4 sm:grid-cols-2">
-						<Button variant="outline" className="w-full" onClick={() => setLoginState(LoginStateEnum.MOBILE)}>
-							<Icon icon="uil:mobile-android" size={20} />
-							{t("sys.login.mobileSignInFormTitle")}
-						</Button>
-						<Button variant="outline" className="w-full" onClick={() => setLoginState(LoginStateEnum.QR_CODE)}>
-							<Icon icon="uil:qrcode-scan" size={20} />
-							{t("sys.login.qrSignInFormTitle")}
-						</Button>
-					</div>
-
-					{/* 其他登录方式 */}
-					<div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-						<span className="relative z-10 bg-background px-2 text-muted-foreground">{t("sys.login.otherSignIn")}</span>
-					</div>
-					<div className="flex cursor-pointer justify-around text-2xl">
-						<Button variant="ghost" size="icon">
-							<Icon icon="mdi:github" size={24} />
-						</Button>
-						<Button variant="ghost" size="icon">
-							<Icon icon="mdi:wechat" size={24} />
-						</Button>
-						<Button variant="ghost" size="icon">
-							<Icon icon="ant-design:google-circle-filled" size={24} />
-						</Button>
-					</div>
-
-					{/* 注册 */}
-					<div className="text-center text-sm">
-						{t("sys.login.noAccount")}
-						<Button variant="link" className="px-1" onClick={() => setLoginState(LoginStateEnum.REGISTER)}>
-							{t("sys.login.signUpFormTitle")}
-						</Button>
-					</div>
-				</form>
-			</Form>
+				{/* Botón Ingresar */}
+				<Button type="submit" className="w-full" disabled={fetching || loading || !selectedCompanyId}>
+					{loading && <Loader2 className="animate-spin mr-2" />}
+					Ingresar al Sistema
+				</Button>
+			</form>
 		</div>
 	);
 }
