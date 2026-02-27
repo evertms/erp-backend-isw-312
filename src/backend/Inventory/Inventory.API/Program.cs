@@ -2,6 +2,8 @@ using Inventory.API.Shared.Infrastructure.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
 using Inventory.API.Features.Companies.Application;
 using Inventory.API.Features.Companies.InterfaceAdapters;
+using Inventory.API.Features.Dashboard.Application;
+using Inventory.API.Features.Dashboard.InterfaceAdapters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Register Handlers (Application Layer)
 builder.Services.AddScoped<GetActiveCompaniesHandler>();
+builder.Services.AddScoped<GetDashboardMetricsHandler>();
 
 // Add CORS for frontend
 builder.Services.AddCors(options =>
@@ -43,5 +46,6 @@ app.MapControllers();
 
 // Map Feature Endpoints
 app.MapCompaniesEndpoints();
+app.MapDashboardEndpoints();
 
 app.Run();
