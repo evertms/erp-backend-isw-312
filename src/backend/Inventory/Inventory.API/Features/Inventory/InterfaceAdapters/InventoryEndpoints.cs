@@ -32,5 +32,21 @@ public static class InventoryEndpoints
         })
         .WithName("GetProductStockInWarehouse")
         .WithSummary("Retrieves current stock for a specific product in a specific warehouse.");
+
+        group.MapGet("/products/{productId:guid}/kardex", async (Guid productId, [FromServices] GetProductKardexHandler handler) =>
+        {
+            var kardex = await handler.HandleAsync(productId);
+            return Results.Ok(kardex);
+        })
+        .WithName("GetProductKardex")
+        .WithSummary("Retrieves the kardex movement history for a specific product.");
+
+        group.MapGet("/companies/{companyId:guid}/kardex-summaries", async (Guid companyId, [FromServices] GetCompanyKardexSummariesHandler handler) =>
+        {
+            var summaries = await handler.HandleAsync(companyId);
+            return Results.Ok(summaries);
+        })
+        .WithName("GetCompanyKardexSummaries")
+        .WithSummary("Retrieves a catalog of active products with their total stock, intended as a list to select a product's kardex.");
     }
 }

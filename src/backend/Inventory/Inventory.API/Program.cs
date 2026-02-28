@@ -27,6 +27,8 @@ builder.Services.AddScoped<GetDashboardMetricsHandler>();
 builder.Services.AddScoped<CreateStockAdjustmentHandler>();
 builder.Services.AddScoped<GetProductStockHandler>();
 builder.Services.AddScoped<GetProductStockInWarehouseHandler>();
+builder.Services.AddScoped<GetProductKardexHandler>();
+builder.Services.AddScoped<GetCompanyKardexSummariesHandler>();
 
 // Add CORS for frontend
 builder.Services.AddCors(options =>
