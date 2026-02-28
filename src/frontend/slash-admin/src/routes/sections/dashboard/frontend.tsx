@@ -9,6 +9,12 @@ export function getFrontendDashboardRoutes(): RouteObject[] {
 		{ path: "dashboard/:companyId", element: Component("/pages/dashboard/workbench") },
 		{ path: "analysis", element: Component("/pages/dashboard/analysis") },
 		{
+			path: "inventory",
+			children: [
+				{ path: "adjustments/:companyId", element: Component("/pages/inventory/stock-adjustment") }
+			]
+		},
+		{
 			path: "components",
 			children: [
 				{ index: true, element: <Navigate to="animate" replace /> },

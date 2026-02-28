@@ -2,13 +2,14 @@ import Icon from "@/components/icon/icon";
 import { Card, CardContent } from "@/ui/card";
 import { Text, Title } from "@/ui/typography";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { rgbAlpha } from "@/utils/theme";
 
 import BannerCard from "./banner-card";
 
 export default function Workbench() {
 	const { companyId } = useParams();
+	const navigate = useNavigate();
 	const [metrics, setMetrics] = useState({ totalProducts: 0, totalStock: 0, lowStockAlerts: 0 });
 	const [companyName, setCompanyName] = useState("");
 
@@ -87,6 +88,22 @@ export default function Workbench() {
 						</CardContent>
 					</Card>
 				))}
+			</div>
+
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<Card className="hover:shadow-lg transition-all cursor-pointer" onClick={() => navigate(`/inventory/adjustments/${companyId}`)}>
+					<CardContent className="flex items-center gap-4 p-6">
+						<div className="rounded-full p-3 bg-primary/10">
+							<Icon icon="solar:pen-new-square-outline" size={32} className="text-primary" />
+						</div>
+						<div>
+							<Title as="h3" className="text-lg font-bold">Ajustes de Stock</Title>
+							<Text variant="body2" className="text-muted-foreground">
+								Registrar un ingreso o salida manual (mermas, errores, etc.)
+							</Text>
+						</div>
+					</CardContent>
+				</Card>
 			</div>
 		</div>
 	);
