@@ -4,6 +4,8 @@ using Inventory.API.Features.Companies.Application;
 using Inventory.API.Features.Companies.InterfaceAdapters;
 using Inventory.API.Features.Dashboard.Application;
 using Inventory.API.Features.Dashboard.InterfaceAdapters;
+using Inventory.API.Features.Inventory.Application;
+using Inventory.API.Features.Inventory.InterfaceAdapters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Register Handlers (Application Layer)
 builder.Services.AddScoped<GetActiveCompaniesHandler>();
+builder.Services.AddScoped<GetCompanyWarehousesHandler>();
+builder.Services.AddScoped<GetCompanyProductsHandler>();
 builder.Services.AddScoped<GetDashboardMetricsHandler>();
+builder.Services.AddScoped<CreateStockAdjustmentHandler>();
+builder.Services.AddScoped<GetProductStockHandler>();
+builder.Services.AddScoped<GetProductStockInWarehouseHandler>();
 
 // Add CORS for frontend
 builder.Services.AddCors(options =>
@@ -47,5 +54,6 @@ app.MapControllers();
 // Map Feature Endpoints
 app.MapCompaniesEndpoints();
 app.MapDashboardEndpoints();
+app.MapInventoryEndpoints();
 
 app.Run();
