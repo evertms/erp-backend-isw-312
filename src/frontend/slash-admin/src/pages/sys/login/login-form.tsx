@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import fallbackAvatar from "@/assets/images/characters/character_3.png";
 
 type Company = {
 	id: string;
@@ -64,7 +65,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 				id: selectedCompanyId, 
 				username: "Operador de Inventario",
 				email: "operador@empresa.com",
-				avatar: company.imageUrl || "",
+				avatar: company.imageUrl || fallbackAvatar,
 				roles: ["admin"] as any,
 				permissions: ["sys.menu.dashboard"] as any
 			});
