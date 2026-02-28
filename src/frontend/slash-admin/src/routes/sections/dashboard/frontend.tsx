@@ -11,7 +11,8 @@ export function getFrontendDashboardRoutes(): RouteObject[] {
 		{
 			path: "inventory",
 			children: [
-				{ path: "adjustments/:companyId", element: Component("/pages/inventory/stock-adjustment") }
+				{ path: "adjustments/:companyId", element: Component("/pages/inventory/stock-adjustment") },
+				{ path: "kardex/:companyId", element: Component("/pages/inventory/kardex") }
 			]
 		},
 		{

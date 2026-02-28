@@ -104,6 +104,20 @@ export default function Workbench() {
 						</div>
 					</CardContent>
 				</Card>
+
+				<Card className="hover:shadow-lg transition-all cursor-pointer" onClick={() => navigate(`/inventory/kardex/${companyId}`)}>
+					<CardContent className="flex items-center gap-4 p-6">
+						<div className="rounded-full p-3 bg-indigo-500/10">
+							<Icon icon="solar:history-bold-duotone" size={32} className="text-indigo-500" />
+						</div>
+						<div>
+							<Title as="h3" className="text-lg font-bold">Kardex de Productos</Title>
+							<Text variant="body2" className="text-muted-foreground">
+								Revisar historial de movimientos y stock de cada producto.
+							</Text>
+						</div>
+					</CardContent>
+				</Card>
 			</div>
 		</div>
 	);
