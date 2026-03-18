@@ -1,0 +1,9 @@
+<Project>
+    <PropertyGroup>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    </PropertyGroup>
+    <ItemGroup>
+        <!-- Define your package versions here -->
+        <PackageVersion Include="MediatR" Version="14.1.0" />
+    </ItemGroup>
+</Project>
