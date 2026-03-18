@@ -9,5 +9,9 @@
     <ItemGroup>
       <ProjectReference Include="..\Inventory.Domain\Inventory.Domain.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="MediatR" />
+    </ItemGroup>
 
 </Project>

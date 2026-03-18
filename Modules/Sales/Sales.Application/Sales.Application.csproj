@@ -9,5 +9,9 @@
     <ItemGroup>
       <ProjectReference Include="..\Sales.Domain\Sales.Domain.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="MediatR" />
+    </ItemGroup>
 
 </Project>
