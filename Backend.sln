@@ -8,25 +8,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Inventory", "Inventory", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sales", "Sales", "{1DFBB127-5034-4D7F-A745-F3E42FFDE666}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Modules\Inventory\Domain\Domain.csproj", "{D847D37A-645B-49E5-9A84-E617311086C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory.Domain", "Modules\Inventory\Inventory.Domain\Inventory.Domain.csproj", "{D847D37A-645B-49E5-9A84-E617311086C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Modules\Inventory\Application\Application.csproj", "{3E483E83-87D7-4EF2-B37C-4333E93DFB72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory.Application", "Modules\Inventory\Inventory.Application\Inventory.Application.csproj", "{3E483E83-87D7-4EF2-B37C-4333E93DFB72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Modules\Sales\Domain\Domain.csproj", "{451B979A-7805-48C2-8D44-C27EF50A34F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sales.Domain", "Modules\Sales\Sales.Domain\Sales.Domain.csproj", "{451B979A-7805-48C2-8D44-C27EF50A34F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Modules\Inventory\Infrastructure\Infrastructure.csproj", "{394BC42B-FDC0-48DC-96C8-072AB0ACC974}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory.Infrastructure", "Modules\Inventory\Inventory.Infrastructure\Inventory.Infrastructure.csproj", "{394BC42B-FDC0-48DC-96C8-072AB0ACC974}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Modules\Sales\Application\Application.csproj", "{5ACAA61C-7FC4-464B-9ABC-908C5FE8D56B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sales.Application", "Modules\Sales\Sales.Application\Sales.Application.csproj", "{5ACAA61C-7FC4-464B-9ABC-908C5FE8D56B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Modules\Sales\Infrastructure\Infrastructure.csproj", "{4587D01D-F77A-4323-BB9F-BB8B1A2BF6A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sales.Infrastructure", "Modules\Sales\Sales.Infrastructure\Sales.Infrastructure.csproj", "{4587D01D-F77A-4323-BB9F-BB8B1A2BF6A0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{E5DCC754-6FE6-4CE9-B5E0-4F9ACD72F734}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Modules\Core\Domain\Domain.csproj", "{692523C3-1790-4C7E-9527-B18740FECBA2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Domain", "Modules\Core\Core.Domain\Core.Domain.csproj", "{692523C3-1790-4C7E-9527-B18740FECBA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Modules\Core\Application\Application.csproj", "{619F228A-AE45-4489-A72C-EB8DB36DBB3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Application", "Modules\Core\Core.Application\Core.Application.csproj", "{619F228A-AE45-4489-A72C-EB8DB36DBB3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Modules\Core\Infrastructure\Infrastructure.csproj", "{65855C30-9324-425F-87BA-42C6EBB01132}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Infrastructure", "Modules\Core\Core.Infrastructure\Core.Infrastructure.csproj", "{65855C30-9324-425F-87BA-42C6EBB01132}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
