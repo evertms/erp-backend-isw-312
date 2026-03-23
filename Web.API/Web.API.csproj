@@ -17,8 +17,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Companies\InterfaceAdapters\" />
-      <Folder Include="Features\Dashboard\" />
+      <ProjectReference Include="..\Modules\Core\Core.Infrastructure\Core.Infrastructure.csproj" />
+      <ProjectReference Include="..\Modules\Inventory\Inventory.Infrastructure\Inventory.Infrastructure.csproj" />
+      <ProjectReference Include="..\Modules\Sales\Sales.Infrastructure\Sales.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
