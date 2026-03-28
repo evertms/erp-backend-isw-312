@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
         // Repositorios
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductStockRepository, ProductStockRepository>();
         services.AddScoped<IKardexMovementRepository, KardexMovementRepository>();
@@ -42,6 +43,7 @@ public static class ServiceCollectionExtensions
         app.MapDashboardEndpoints();
         app.MapProductEndpoints();
         app.MapWarehouseEndpoints();
+        app.MapCategoryEndpoints();
         
         return app;
     }

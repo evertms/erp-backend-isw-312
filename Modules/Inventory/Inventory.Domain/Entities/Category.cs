@@ -27,4 +27,15 @@ public class Category
 
         return new Category(Guid.NewGuid(), companyId, name, description);
     }
+
+    public void Update(string name, string? description)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("El nombre de la categoría no puede estar vacío.", nameof(name));
+        }
+
+        Name = name;
+        Description = description;
+    }
 }
