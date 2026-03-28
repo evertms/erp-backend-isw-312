@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
 
         // Repositorios
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IUnitRepository, UnitRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductStockRepository, ProductStockRepository>();
         services.AddScoped<IKardexMovementRepository, KardexMovementRepository>();
@@ -44,6 +45,7 @@ public static class ServiceCollectionExtensions
         app.MapProductEndpoints();
         app.MapWarehouseEndpoints();
         app.MapCategoryEndpoints();
+        app.MapUnitEndpoints();
         
         return app;
     }
