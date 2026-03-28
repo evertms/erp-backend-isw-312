@@ -42,7 +42,39 @@ public class Product
 
     public static Product Create(Guid companyId, Guid categoryId, Guid unitId, string name, decimal price, string? code = null, Guid? supplierId = null, string? imageUrl = null, decimal minStockAlert = 0)
     {
-        // Regla de Composición de Producto: No puede instanciarse sin nombre, precio, categoría y unidad de medida
+        Validate(name, categoryId, unitId, price);
+        return new Product(Guid.NewGuid(), companyId, categoryId, unitId, supplierId, code, name, price, ProductStatus.Activo, imageUrl, minStockAlert, DateTime.UtcNow);
+    }
+
+    public void Update(string name, Guid categoryId, Guid unitId, decimal price, string? code, Guid? supplierId, string? imageUrl, decimal minStockAlert)
+    {
+        Validate(name, categoryId, unitId, price);
+        
+        Name = name;
+        CategoryId = categoryId;
+        UnitId = unitId;
+        Price = price;
+        Code = code;
+        SupplierId = supplierId;
+        ImageUrl = imageUrl;
+        MinStockAlert = minStockAlert;
+    }
+
+    public void UpdateStatus(ProductStatus status)
+    {
+        Status = status;
+    }
+
+    public void CheckCanBeSold()
+    {
+        if (Status == ProductStatus.Inactivo || Status == ProductStatus.Agotado)
+        {
+            throw new InvalidOperationException($"El producto '{Name}' no puede ser comercializado porque está en estado '{Status}'.");
+        }
+    }
+    
+    private static void Validate(string name, Guid categoryId, Guid unitId, decimal price)
+    {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("El nombre del producto es obligatorio.", nameof(name));
         
@@ -52,24 +84,7 @@ public class Product
         if (unitId == Guid.Empty)
             throw new ArgumentException("La unidad de medida es obligatoria.", nameof(unitId));
             
-        // Regla de Invariante de Precio: Estrictamente mayor a 0
         if (price <= 0)
             throw new ArgumentException("El precio debe ser estrictamente mayor a 0.", nameof(price));
-
-        return new Product(Guid.NewGuid(), companyId, categoryId, unitId, supplierId, code, name, price, ProductStatus.Activo, imageUrl, minStockAlert, DateTime.UtcNow);
-    }
-
-    public void CheckCanBeSold()
-    {
-        // Regla de Bloqueo por Estado: Producto Inactivo o Agotado no puede ser comercializado
-        if (Status == ProductStatus.Inactivo || Status == ProductStatus.Agotado)
-        {
-            throw new InvalidOperationException($"El producto '{Name}' no puede ser comercializado porque está en estado '{Status}'.");
-        }
-    }
-
-    public void UpdateStatus(ProductStatus status)
-    {
-        Status = status;
     }
 }

@@ -16,13 +16,22 @@ public class ProductRepository(InventoryDbContext dbContext) : IProductRepositor
 
     public async Task<List<Product>> GetActiveProductsWithStockByCompanyIdAsync(Guid companyId, CancellationToken cancellationToken = default)
     {
-        // En un caso real, podría requerir un Include o un query de proyección si el stock está en otro agregado
-        // Para respetar la interfaz definida, lo dejamos implementado básico.
         return await GetActiveProductsByCompanyIdAsync(companyId, cancellationToken);
+    }
+
+    public Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return dbContext.Products.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
     public async Task AddAsync(Product product, CancellationToken cancellationToken)
     {
         await dbContext.Products.AddAsync(product, cancellationToken);
+    }
+
+    public Task UpdateAsync(Product product, CancellationToken cancellationToken)
+    {
+        dbContext.Products.Update(product);
+        return Task.CompletedTask;
     }
 }
