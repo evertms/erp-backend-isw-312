@@ -30,3 +30,4 @@ Violating these rules will break the architectural design.
 4. **Domain Layer Purity:** The Domain layer must have NO external dependencies (No EF Core, no MediatR, no ASP.NET Core). It should only contain pure C# classes.
 5. **EF Core Configurations:** Do not use Data Annotations in Domain entities. Use `IEntityTypeConfiguration<T>` in the Infrastructure layer for all database mappings. Ensure each module defines a default schema (e.g., `builder.HasDefaultSchema("sales");`).
 6. **CQRS Strictness:** Commands mutate state and return basic responses (e.g., ID or Result object). Queries only read state and return DTOs. Never mix them.
+7. **Avoid writing unnecessary code:** DO NOT create files, classes, exceptions, or interfaces that will not be used at the moment unless explicitly requested.
