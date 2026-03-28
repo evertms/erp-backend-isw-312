@@ -1,6 +1,7 @@
 using Core.Infrastructure;
 using Inventory.Infrastructure;
 using Sales.Infrastructure;
+using Web.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,9 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    
+    // Ejecutar Migraciones y Seeders solo en entorno de desarrollo
+    await app.ApplyMigrationsAndSeedAsync();
 }
 
 app.UseCors("AllowFrontend");
