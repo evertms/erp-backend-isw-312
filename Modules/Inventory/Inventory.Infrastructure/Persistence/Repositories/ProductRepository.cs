@@ -20,4 +20,9 @@ public class ProductRepository(InventoryDbContext dbContext) : IProductRepositor
         // Para respetar la interfaz definida, lo dejamos implementado básico.
         return await GetActiveProductsByCompanyIdAsync(companyId, cancellationToken);
     }
+
+    public async Task AddAsync(Product product, CancellationToken cancellationToken)
+    {
+        await dbContext.Products.AddAsync(product, cancellationToken);
+    }
 }
