@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen();
 
 // Register modules
 builder.Services.AddCoreModule(builder.Configuration);
@@ -32,6 +33,12 @@ if (app.Environment.IsDevelopment())
     
     // Ejecutar Migraciones y Seeders solo en entorno de desarrollo
     await app.ApplyMigrationsAndSeedAsync();
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        options.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseCors("AllowFrontend");
