@@ -3,6 +3,7 @@ using Inventory.Application.Features.Kardex.Queries.GetCompanyKardexSummaries;
 using Inventory.Application.Features.Kardex.Queries.GetProductKardex;
 using Inventory.Application.Features.Stocks.Queries.GetProductStock;
 using Inventory.Application.Features.Stocks.Queries.GetProductStockInWarehouse;
+using Inventory.Application.Features.Stocks.Queries.GetCompanyStock;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Contracts.Inventory;
@@ -58,9 +59,21 @@ public static class InventoryEndpoints
         // New contract endpoints
         var contractGroup = app.MapGroup("/api/inventory/companies/{companyCen}").WithTags("Inventory Contract");
 
-        contractGroup.MapGet("/stock", async (string companyCen) =>
+        contractGroup.MapGet("/stock", async (string companyCen, [FromQuery] string? productCen, [FromQuery] string? warehouseCen, IMediator mediator) =>
         {
-            return Results.NotFound();
+            if (!Guid.TryParse(companyCen, out var companyId))
+                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
+
+            Guid? productId = null;
+            if (!string.IsNullOrEmpty(productCen) && Guid.TryParse(productCen, out var pId))
+                productId = pId;
+
+            Guid? warehouseId = null;
+            if (!string.IsNullOrEmpty(warehouseCen) && Guid.TryParse(warehouseCen, out var wId))
+                warehouseId = wId;
+
+            var result = await mediator.Send(new GetCompanyStockQuery(companyId, productId, warehouseId));
+            return Results.Ok(result);
         })
         .Produces<List<StockItemContractDto>>(StatusCodes.Status200OK)
         .WithName("GetCompanyStock")

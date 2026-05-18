@@ -7,5 +7,6 @@ public interface IProductStockRepository
     Task<List<ProductStock>> GetStockByProductIdAsync(Guid productId, CancellationToken cancellationToken = default);
     Task<ProductStock?> GetStockByProductAndWarehouseAsync(Guid productId, Guid warehouseId, CancellationToken cancellationToken = default);
 
+    Task<List<ProductStock>> GetStockAsync(Guid companyId, Guid? productId = null, Guid? warehouseId = null, CancellationToken cancellationToken = default);
     Task<List<ProductStock>> GetAllActiveProductsStock(Guid companyId, CancellationToken cancellationToken = default);
 }
