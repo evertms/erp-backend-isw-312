@@ -4,12 +4,9 @@ using Inventory.Application.Features.Kardex.Queries.GetProductKardex;
 using Inventory.Application.Features.Stocks.Queries.GetProductStock;
 using Inventory.Application.Features.Stocks.Queries.GetProductStockInWarehouse;
 using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 
-namespace Inventory.Infrastructure.Endpoints;
+namespace Inventory.API.Endpoints;
 
 public static class InventoryEndpoints
 {
@@ -56,5 +53,36 @@ public static class InventoryEndpoints
         })
         .WithName("GetCompanyKardexSummaries")
         .WithSummary("Retrieves a catalog of active products with their total stock, intended as a list to select a product's kardex.");
+
+        // New contract endpoints
+        var contractGroup = app.MapGroup("/api/inventory/companies/{companyCen}").WithTags("Inventory Contract");
+
+        contractGroup.MapGet("/stock", async (string companyCen) =>
+        {
+            return Results.NotFound();
+        })
+        .WithName("GetCompanyStock")
+        .WithSummary("Consulta stock por empresa");
+
+        contractGroup.MapGet("/products/{productCen}/kardex", async (string companyCen, string productCen) =>
+        {
+            return Results.NotFound();
+        })
+        .WithName("GetProductKardexContract")
+        .WithSummary("Obtiene kardex de un producto");
+
+        contractGroup.MapPost("/documents", async (string companyCen) =>
+        {
+            return Results.NotFound();
+        })
+        .WithName("CreateInventoryDocument")
+        .WithSummary("Crea un documento de inventario");
+
+        contractGroup.MapGet("/documents", async (string companyCen) =>
+        {
+            return Results.NotFound();
+        })
+        .WithName("GetInventoryDocuments")
+        .WithSummary("Lista documentos de inventario");
     }
 }

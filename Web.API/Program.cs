@@ -49,6 +49,5 @@ app.MapControllers();
 
 // Map modules endpoints
 app.MapCoreModuleEndpoints();
-app.MapInventoryModuleEndpoints();
 
 app.Run();

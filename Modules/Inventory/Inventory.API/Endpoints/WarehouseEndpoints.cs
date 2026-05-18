@@ -1,19 +1,19 @@
 using Inventory.Application.Features.Warehouses.Queries.GetCompanyWarehouses;
 using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 
-namespace Inventory.Infrastructure.Endpoints;
+namespace Inventory.API.Endpoints;
 
 public static class WarehouseEndpoints
 {
     public static void MapWarehouseEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/companies/{companyId:guid}/warehouses").WithTags("Inventory - Warehouses");
+        var group = app.MapGroup("/api/inventory/companies/{companyCen}/warehouses").WithTags("Inventory - Warehouses");
 
-        group.MapGet("/", async (Guid companyId, IMediator mediator) =>
+        group.MapGet("/", async (string companyCen, IMediator mediator) =>
         {
+            if (!Guid.TryParse(companyCen, out var companyId))
+                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
+
             var warehouses = await mediator.Send(new GetCompanyWarehousesQuery(companyId));
             return Results.Ok(warehouses);
         })

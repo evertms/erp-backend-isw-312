@@ -1,9 +1,6 @@
 using Inventory.Domain.Repositories;
-using Inventory.Infrastructure.Endpoints;
 using Inventory.Infrastructure.Persistence;
 using Inventory.Infrastructure.Persistence.Repositories;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,17 +33,5 @@ public static class ServiceCollectionExtensions
         });
 
         return services;
-    }
-
-    public static IEndpointRouteBuilder MapInventoryModuleEndpoints(this IEndpointRouteBuilder app)
-    {
-        app.MapInventoryEndpoints();
-        app.MapDashboardEndpoints();
-        app.MapProductEndpoints();
-        app.MapWarehouseEndpoints();
-        app.MapCategoryEndpoints();
-        app.MapUnitEndpoints();
-        
-        return app;
     }
 }

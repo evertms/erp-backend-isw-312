@@ -3,24 +3,24 @@ using Inventory.Application.Features.Units.Commands.UpdateUnit;
 using Inventory.Application.Features.Units.Queries.GetUnits;
 using Inventory.Application.Features.Units.Queries.GetUnitById;
 using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 
-namespace Inventory.Infrastructure.Endpoints;
+namespace Inventory.API.Endpoints;
 
 public static class UnitEndpoints
 {
     public static void MapUnitEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/inventory/units").WithTags("Inventory Units");
+        var group = app.MapGroup("/api/inventory/companies/{companyCen}/units").WithTags("Inventory Units");
 
-        group.MapPost("/", async (CreateUnitCommand command, IMediator mediator) =>
+        group.MapPost("/", async (string companyCen, CreateUnitCommand command, IMediator mediator) =>
         {
             try
             {
+                if (!Guid.TryParse(companyCen, out var companyId) || companyId != command.CompanyId)
+                    return Results.BadRequest(new { Error = "CEN de empresa no válido o no coincide con el cuerpo." });
+
                 var id = await mediator.Send(command);
-                return Results.Created($"/api/inventory/units/{id}", new { Id = id });
+                return Results.Created($"/api/inventory/companies/{companyCen}/units/{id}", new { Id = id });
             }
             catch (ArgumentException ex)
             {
@@ -32,11 +32,14 @@ public static class UnitEndpoints
             }
         });
 
-        group.MapPut("/{id:guid}", async (Guid id, UpdateUnitCommand command, IMediator mediator) =>
+        group.MapPut("/{unitCen}", async (string companyCen, string unitCen, UpdateUnitCommand command, IMediator mediator) =>
         {
             try
             {
-                if (id != command.Id)
+                if (!Guid.TryParse(companyCen, out var companyId) || companyId != command.CompanyId)
+                    return Results.BadRequest(new { Error = "CEN de empresa no válido o no coincide con el cuerpo." });
+
+                if (!Guid.TryParse(unitCen, out var id) || id != command.Id)
                     return Results.BadRequest(new { Error = "ID en la ruta no coincide con el cuerpo." });
 
                 var result = await mediator.Send(command);
@@ -52,14 +55,20 @@ public static class UnitEndpoints
             }
         });
 
-        group.MapGet("/{companyId:guid}", async (Guid companyId, IMediator mediator) =>
+        group.MapGet("/", async (string companyCen, IMediator mediator) =>
         {
+            if (!Guid.TryParse(companyCen, out var companyId))
+                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
+
             var result = await mediator.Send(new GetUnitsQuery(companyId));
             return Results.Ok(result);
         });
 
-        group.MapGet("/{companyId:guid}/{id:guid}", async (Guid companyId, Guid id, IMediator mediator) =>
+        group.MapGet("/{id:guid}", async (string companyCen, Guid id, IMediator mediator) =>
         {
+            if (!Guid.TryParse(companyCen, out var companyId))
+                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
+
             var result = await mediator.Send(new GetUnitByIdQuery(id, companyId));
             return result is not null ? Results.Ok(result) : Results.NotFound();
         });

@@ -1,19 +1,19 @@
 using Inventory.Application.Features.Dashboard.Queries.GetDashboardMetrics;
 using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 
-namespace Inventory.Infrastructure.Endpoints;
+namespace Inventory.API.Endpoints;
 
 public static class DashboardEndpoints
 {
     public static void MapDashboardEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/dashboard").WithTags("Inventory - Dashboard");
+        var group = app.MapGroup("/api/inventory/companies/{companyCen}/dashboard").WithTags("Inventory - Dashboard");
 
-        group.MapGet("/{companyId:guid}/metrics", async (Guid companyId, IMediator mediator) =>
+        group.MapGet("/", async (string companyCen, IMediator mediator) =>
         {
+            if (!Guid.TryParse(companyCen, out var companyId))
+                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
+
             var metrics = await mediator.Send(new GetDashboardMetricsQuery(companyId));
             return Results.Ok(metrics);
         })
