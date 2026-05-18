@@ -13,8 +13,6 @@ public static class MigrationExtensions
 
         await context.Database.MigrateAsync();
 
-        // Nota: Se requiere un CompanyId por defecto para el seeder de inventario.
-        // En una implementación real esta Guid vendría de un tenant o una configuración.
         var defaultCompanyId = Guid.Parse("00000000-0000-0000-0000-000000000001");
         
         await InventorySeeder.SeedAsync(context, defaultCompanyId);        

@@ -27,4 +27,12 @@ public class Company
 
         return new Company(Guid.NewGuid(), name, true, DateTime.UtcNow);
     }
+
+    public static Company CreateWithId(Guid id, string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("El nombre de la empresa no puede estar vacío.", nameof(name));
+
+        return new Company(id, name, true, DateTime.UtcNow);
+    }
 }

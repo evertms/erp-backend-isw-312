@@ -6,14 +6,16 @@ namespace Core.Infrastructure.Persistence;
 
 public static class CoreSeeder
 {
+    public static readonly Guid DefaultCompanyId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
     public static async Task<Guid> SeedAsync(CoreDbContext context)
     {
         // Buscar si ya existe alguna empresa
-        var company = await context.Companies.FirstOrDefaultAsync();
+        var company = await context.Companies.FirstOrDefaultAsync(c => c.Id == DefaultCompanyId);
         
         if (company is null)
         {
-            company = Company.Create("Empresa de Desarrollo S.A.");
+            company = Company.CreateWithId(DefaultCompanyId, "Empresa de Desarrollo S.A.");
             context.Companies.Add(company);
             await context.SaveChangesAsync();
         }
