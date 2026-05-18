@@ -19,6 +19,37 @@ public class ProductRepository(InventoryDbContext dbContext) : IProductRepositor
         return await GetActiveProductsByCompanyIdAsync(companyId, cancellationToken);
     }
 
+    public async Task<List<Product>> SearchAsync(
+        Guid companyId, 
+        string? searchTerm = null, 
+        Guid? categoryId = null, 
+        ProductStatus? status = null, 
+        CancellationToken cancellationToken = default)
+    {
+        var query = dbContext.Products
+            .Include(p => p.Category)
+            .Include(p => p.Unit)
+            .Where(p => p.CompanyId == companyId);
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var term = searchTerm.Trim().ToLower();
+            query = query.Where(p => p.Name.ToLower().Contains(term) || (p.Code != null && p.Code.ToLower().Contains(term)));
+        }
+
+        if (categoryId.HasValue)
+        {
+            query = query.Where(p => p.CategoryId == categoryId.Value);
+        }
+
+        if (status.HasValue)
+        {
+            query = query.Where(p => p.Status == status.Value);
+        }
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
     public Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return dbContext.Products.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);

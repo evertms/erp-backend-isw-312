@@ -4,6 +4,7 @@ using Inventory.Application.Features.Products.Commands.UpdateProductStatus;
 using Inventory.Application.Features.Products.Queries.GetCompanyProducts;
 using Inventory.Application.Features.Products.Queries.GetProductById;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Shared.Contracts.Inventory;
 
 namespace Inventory.API.Endpoints;
@@ -93,12 +94,16 @@ public static class ProductEndpoints
             return Results.NotFound();
         });
 
-        group.MapGet("/", async (string companyCen, IMediator mediator) =>
+        group.MapGet("/", async (string companyCen, [FromQuery] string? search, [FromQuery] string? categoryCen, [FromQuery] string? status, IMediator mediator) =>
         {
             if (!Guid.TryParse(companyCen, out var companyId))
                 return Results.BadRequest(new { Error = "CEN de empresa no válido." });
 
-            var products = await mediator.Send(new GetCompanyProductsQuery(companyId));
+            Guid? categoryId = null;
+            if (!string.IsNullOrEmpty(categoryCen) && Guid.TryParse(categoryCen, out var catIdParsed))
+                categoryId = catIdParsed;
+
+            var products = await mediator.Send(new GetCompanyProductsQuery(companyId, search, categoryId, status));
             return Results.Ok(products);
         })
         .WithName("GetCompanyProducts")

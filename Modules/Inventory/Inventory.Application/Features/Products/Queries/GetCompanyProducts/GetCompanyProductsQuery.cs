@@ -3,4 +3,8 @@ using Shared.Contracts.Inventory;
 
 namespace Inventory.Application.Features.Products.Queries.GetCompanyProducts;
 
-public record GetCompanyProductsQuery(Guid CompanyId) : IRequest<List<ProductContractDto>>;
+public record GetCompanyProductsQuery(
+    Guid CompanyId, 
+    string? Search = null, 
+    Guid? CategoryId = null, 
+    string? Status = null) : IRequest<List<ProductContractDto>>;

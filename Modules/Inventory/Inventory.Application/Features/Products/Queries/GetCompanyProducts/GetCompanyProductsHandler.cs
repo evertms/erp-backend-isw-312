@@ -1,5 +1,6 @@
 using MediatR;
 using Inventory.Domain.Repositories;
+using Inventory.Domain.Enums;
 using Shared.Contracts.Inventory;
 
 namespace Inventory.Application.Features.Products.Queries.GetCompanyProducts;
@@ -8,21 +9,33 @@ public class GetCompanyProductsHandler(IProductRepository productRepository) : I
 {
     public async Task<List<ProductContractDto>> Handle(GetCompanyProductsQuery request, CancellationToken cancellationToken)
     {
-        var products = await productRepository.GetActiveProductsByCompanyIdAsync(request.CompanyId, cancellationToken);
+        ProductStatus? statusEnum = null;
+        if (!string.IsNullOrWhiteSpace(request.Status) && Enum.TryParse<ProductStatus>(request.Status, true, out var parsedStatus))
+        {
+            statusEnum = parsedStatus;
+        }
+
+        var products = await productRepository.SearchAsync(
+            request.CompanyId, 
+            request.Search, 
+            request.CategoryId, 
+            statusEnum, 
+            cancellationToken);
+
         return products.Select(p => new ProductContractDto(
             p.Id.ToString(),
             p.Code ?? string.Empty,
             p.Name,
-            null,
+            null, // Description
             p.CategoryId.ToString(),
-            "", // categoryName - needs join or separate query if not in entity
+            p.Category.Name,
             p.UnitId.ToString(),
-            "", // unitName
+            p.Unit.Name,
             (double)p.Price,
-            null,
+            null, // CostPrice
             (double)p.MinStockAlert,
             p.Status.ToString(),
-            null
+            null // StationCode
         )).ToList();
     }
 }
