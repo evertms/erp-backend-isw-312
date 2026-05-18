@@ -31,3 +31,12 @@ Violating these rules will break the architectural design.
 5. **EF Core Configurations:** Do not use Data Annotations in Domain entities. Use `IEntityTypeConfiguration<T>` in the Infrastructure layer for all database mappings. Ensure each module defines a default schema (e.g., `builder.HasDefaultSchema("sales");`).
 6. **CQRS Strictness:** Commands mutate state and return basic responses (e.g., ID or Result object). Queries only read state and return DTOs. Never mix them.
 7. **Avoid writing unnecessary code:** DO NOT create files, classes, exceptions, or interfaces that will not be used at the moment unless explicitly requested.
+
+# Shared Contracts & DTOs
+To prevent code duplication and ensure strict compliance with OpenAPI contracts:
+- All external communication models (DTOs, Requests, Responses) are centralized in the `/Shared/Shared.Contracts` project.
+- These contracts are organized by module (e.g., `Shared.Contracts.Inventory`).
+- **Architectural Rule:** The `{ModuleName}.Application` project references `Shared.Contracts`.
+- **CQRS Implementation:** MediatR Handlers in the Application layer MUST use these contract DTOs directly as their return types (or input types for Commands when possible).
+- **API Simplification:** The `{ModuleName}.API` project should NOT contain DTOs and should NOT perform manual mapping. It acts as a thin passthrough that sends queries/commands to MediatR and returns the result directly.
+- **Guid to String Mapping:** Since the OpenAPI contract uses strings for IDs (CEN), the Application layer is responsible for parsing these strings to `Guid` for internal domain logic and converting `Guid` back to `string` in the response DTOs.
