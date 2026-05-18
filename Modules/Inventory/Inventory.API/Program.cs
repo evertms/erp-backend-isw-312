@@ -1,4 +1,5 @@
 using Inventory.API.Endpoints;
+using Inventory.API.Extensions;
 using Inventory.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +16,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     
-    // Ejecutar Migraciones y Seeders solo en entorno de desarrollo
+    // Ejecutar Migraciones y Seeders
+    await app.ApplyMigrationsAndSeedAsync();
+    
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {

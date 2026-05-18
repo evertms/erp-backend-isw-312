@@ -8,7 +8,7 @@ public class GetDashboardMetricsHandler(IProductStockRepository stockRepository)
 {
     public async Task<DashboardDto> Handle(GetDashboardMetricsQuery request, CancellationToken cancellationToken)
     {
-        var activeStocks = await stockRepository.GetAllActiveProductsStock(request.CompanyId);
+        var activeStocks = await stockRepository.GetAllActiveProductsStock(request.CompanyId, cancellationToken);
 
         var productGroupedMetrics = activeStocks
             .GroupBy(ps => ps.Product)
