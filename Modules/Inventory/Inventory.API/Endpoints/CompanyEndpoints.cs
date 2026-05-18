@@ -1,3 +1,5 @@
+using Shared.Contracts.Inventory;
+
 namespace Inventory.API.Endpoints;
 
 public static class CompanyEndpoints
@@ -10,6 +12,7 @@ public static class CompanyEndpoints
         {
             return Results.NotFound();
         })
+        .Produces<List<CompanyContractDto>>(StatusCodes.Status200OK)
         .WithName("GetInventoryCompanies")
         .WithSummary("Lista empresas del contrato de inventario");
 
@@ -17,6 +20,7 @@ public static class CompanyEndpoints
         {
             return Results.NotFound();
         })
+        .Produces<CompanyLookupContractDto>(StatusCodes.Status200OK)
         .WithName("GetInventoryCompanyByCen")
         .WithSummary("Obtiene una empresa por CEN");
     }

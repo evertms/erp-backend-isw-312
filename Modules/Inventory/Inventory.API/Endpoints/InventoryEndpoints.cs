@@ -5,6 +5,7 @@ using Inventory.Application.Features.Stocks.Queries.GetProductStock;
 using Inventory.Application.Features.Stocks.Queries.GetProductStockInWarehouse;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Contracts.Inventory;
 
 namespace Inventory.API.Endpoints;
 
@@ -61,6 +62,7 @@ public static class InventoryEndpoints
         {
             return Results.NotFound();
         })
+        .Produces<List<StockItemContractDto>>(StatusCodes.Status200OK)
         .WithName("GetCompanyStock")
         .WithSummary("Consulta stock por empresa");
 
@@ -68,20 +70,23 @@ public static class InventoryEndpoints
         {
             return Results.NotFound();
         })
+        .Produces<List<KardexMovementContractDto>>(StatusCodes.Status200OK)
         .WithName("GetProductKardexContract")
         .WithSummary("Obtiene kardex de un producto");
 
-        contractGroup.MapPost("/documents", async (string companyCen) =>
+        contractGroup.MapPost("/documents", async (string companyCen, InventoryDocumentContractRequest request) =>
         {
             return Results.NotFound();
         })
+        .Produces<InventoryDocumentContractDto>(StatusCodes.Status201Created)
         .WithName("CreateInventoryDocument")
         .WithSummary("Crea un documento de inventario");
 
-        contractGroup.MapGet("/documents", async (string companyCen) =>
+        contractGroup.MapGet("/documents", async (string companyCen, [FromQuery] string? documentType, [FromQuery] DateTime? from, [FromQuery] DateTime? to) =>
         {
             return Results.NotFound();
         })
+        .Produces<List<InventoryDocumentContractDto>>(StatusCodes.Status200OK)
         .WithName("GetInventoryDocuments")
         .WithSummary("Lista documentos de inventario");
     }

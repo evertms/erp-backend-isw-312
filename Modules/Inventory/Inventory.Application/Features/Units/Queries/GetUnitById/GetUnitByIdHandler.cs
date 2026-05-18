@@ -1,12 +1,12 @@
-using Inventory.Application.DTOs;
 using Inventory.Domain.Repositories;
 using MediatR;
+using Shared.Contracts.Inventory;
 
 namespace Inventory.Application.Features.Units.Queries.GetUnitById;
 
-public class GetUnitByIdHandler(IUnitRepository unitRepository) : IRequestHandler<GetUnitByIdQuery, UnitDto?>
+public class GetUnitByIdHandler(IUnitRepository unitRepository) : IRequestHandler<GetUnitByIdQuery, UnitContractDto?>
 {
-    public async Task<UnitDto?> Handle(GetUnitByIdQuery request, CancellationToken cancellationToken)
+    public async Task<UnitContractDto?> Handle(GetUnitByIdQuery request, CancellationToken cancellationToken)
     {
         var unit = await unitRepository.GetByIdAsync(request.Id, cancellationToken);
 
@@ -15,6 +15,6 @@ public class GetUnitByIdHandler(IUnitRepository unitRepository) : IRequestHandle
             return null;
         }
 
-        return new UnitDto(unit.Id, unit.CompanyId, unit.Name, unit.Code);
+        return new UnitContractDto(unit.Id.ToString(), unit.Name, unit.Code, true);
     }
 }

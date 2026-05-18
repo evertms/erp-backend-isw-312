@@ -1,5 +1,6 @@
 using Inventory.Application.Features.Dashboard.Queries.GetDashboardMetrics;
 using MediatR;
+using Shared.Contracts.Inventory;
 
 namespace Inventory.API.Endpoints;
 

@@ -1,12 +1,12 @@
-using Inventory.Application.DTOs;
 using Inventory.Domain.Repositories;
 using MediatR;
+using Shared.Contracts.Inventory;
 
 namespace Inventory.Application.Features.Products.Queries.GetProductById;
 
-public class GetProductByIdHandler(IProductRepository productRepository) : IRequestHandler<GetProductByIdQuery, ProductDetailsDto?>
+public class GetProductByIdHandler(IProductRepository productRepository) : IRequestHandler<GetProductByIdQuery, ProductContractDto?>
 {
-    public async Task<ProductDetailsDto?> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
+    public async Task<ProductContractDto?> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
         var product = await productRepository.GetByIdAsync(request.Id, cancellationToken);
 
@@ -15,19 +15,20 @@ public class GetProductByIdHandler(IProductRepository productRepository) : IRequ
             return null;
         }
 
-        return new ProductDetailsDto(
-            product.Id,
-            product.CompanyId,
-            product.CategoryId,
-            product.UnitId,
-            product.SupplierId,
-            product.Code,
+        return new ProductContractDto(
+            product.Id.ToString(),
+            product.Code ?? string.Empty,
             product.Name,
-            product.Price,
-            product.Status,
-            product.ImageUrl,
-            product.MinStockAlert,
-            product.CreatedAt
+            null,
+            product.CategoryId.ToString(),
+            "", // categoryName
+            product.UnitId.ToString(),
+            "", // unitName
+            (double)product.Price,
+            null,
+            (double)product.MinStockAlert,
+            product.Status.ToString(),
+            null
         );
     }
 }

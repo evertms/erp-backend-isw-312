@@ -3,6 +3,7 @@ using Inventory.Application.Features.Categories.Commands.UpdateCategory;
 using Inventory.Application.Features.Categories.Queries.GetCategories;
 using Inventory.Application.Features.Categories.Queries.GetCategoryById;
 using MediatR;
+using Shared.Contracts.Inventory;
 
 namespace Inventory.API.Endpoints;
 
@@ -12,15 +13,17 @@ public static class CategoryEndpoints
     {
         var group = app.MapGroup("/api/inventory/companies/{companyCen}/categories").WithTags("Inventory Categories");
 
-        group.MapPost("/", async (string companyCen, CreateCategoryCommand command, IMediator mediator) =>
+        group.MapPost("/", async (string companyCen, CreateCategoryContractRequest request, IMediator mediator) =>
         {
             try
             {
-                if (!Guid.TryParse(companyCen, out var companyId) || companyId != command.CompanyId)
-                    return Results.BadRequest(new { Error = "CEN de empresa no válido o no coincide con el cuerpo." });
+                if (!Guid.TryParse(companyCen, out var companyId))
+                    return Results.BadRequest(new { Error = "CEN de empresa no válido." });
 
+                var command = new CreateCategoryCommand(companyId, request.Name, request.Description);
                 var id = await mediator.Send(command);
-                return Results.Created($"/api/inventory/companies/{companyCen}/categories/{id}", new { Id = id });
+                
+                return Results.Created($"/api/inventory/companies/{companyCen}/categories/{id}", new CategoryContractDto(id.ToString(), request.Name, request.Description, true));
             }
             catch (ArgumentException ex)
             {
@@ -28,18 +31,22 @@ public static class CategoryEndpoints
             }
         });
 
-        group.MapPut("/{categoryCen}", async (string companyCen, string categoryCen, UpdateCategoryCommand command, IMediator mediator) =>
+        group.MapPut("/{categoryCen}", async (string companyCen, string categoryCen, CreateCategoryContractRequest request, IMediator mediator) =>
         {
             try
             {
-                if (!Guid.TryParse(companyCen, out var companyId) || companyId != command.CompanyId)
-                    return Results.BadRequest(new { Error = "CEN de empresa no válido o no coincide con el cuerpo." });
+                if (!Guid.TryParse(companyCen, out var companyId))
+                    return Results.BadRequest(new { Error = "CEN de empresa no válido." });
 
-                if (!Guid.TryParse(categoryCen, out var id) || id != command.Id)
-                    return Results.BadRequest(new { Error = "ID en la ruta no coincide con el cuerpo." });
+                if (!Guid.TryParse(categoryCen, out var id))
+                    return Results.BadRequest(new { Error = "CEN de categoría no válido." });
 
+                var command = new UpdateCategoryCommand(id, companyId, request.Name, request.Description);
                 var result = await mediator.Send(command);
-                return result ? Results.NoContent() : Results.NotFound();
+                
+                return result 
+                    ? Results.Ok(new CategoryContractDto(categoryCen, request.Name, request.Description, true)) 
+                    : Results.NotFound();
             }
             catch (ArgumentException ex)
             {

@@ -1,17 +1,17 @@
-using Inventory.Application.DTOs;
 using Inventory.Domain.Repositories;
 using MediatR;
+using Shared.Contracts.Inventory;
 
 namespace Inventory.Application.Features.Categories.Queries.GetCategories;
 
-public class GetCategoriesHandler(ICategoryRepository categoryRepository) : IRequestHandler<GetCategoriesQuery, List<CategoryDto>>
+public class GetCategoriesHandler(ICategoryRepository categoryRepository) : IRequestHandler<GetCategoriesQuery, List<CategoryContractDto>>
 {
-    public async Task<List<CategoryDto>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
+    public async Task<List<CategoryContractDto>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
     {
         var categories = await categoryRepository.GetAllCategoriesAsync(request.CompanyId, cancellationToken);
 
         return categories
-            .Select(c => new CategoryDto(c.Id, c.CompanyId, c.Name, c.Description))
+            .Select(c => new CategoryContractDto(c.Id.ToString(), c.Name, c.Description, true))
             .ToList();
     }
 }

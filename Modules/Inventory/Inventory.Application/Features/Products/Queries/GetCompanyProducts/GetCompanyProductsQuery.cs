@@ -1,6 +1,6 @@
 using MediatR;
-using Inventory.Application.Features.Products.DTOs;
+using Shared.Contracts.Inventory;
 
 namespace Inventory.Application.Features.Products.Queries.GetCompanyProducts;
 
-public record GetCompanyProductsQuery(Guid CompanyId) : IRequest<List<ProductDto>>;
+public record GetCompanyProductsQuery(Guid CompanyId) : IRequest<List<ProductContractDto>>;

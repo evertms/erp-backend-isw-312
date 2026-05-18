@@ -1,6 +1,6 @@
 using MediatR;
-using Inventory.Application.Features.Dashboard.DTOs;
+using Shared.Contracts.Inventory;
 
 namespace Inventory.Application.Features.Dashboard.Queries.GetDashboardMetrics;
 
-public record GetDashboardMetricsQuery(Guid CompanyId) : IRequest<DashboardDto>;
+public record GetDashboardMetricsQuery(Guid CompanyId) : IRequest<InventoryDashboardContractDto>;

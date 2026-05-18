@@ -1,5 +1,6 @@
 using Inventory.Application.Features.Warehouses.Queries.GetCompanyWarehouses;
 using MediatR;
+using Shared.Contracts.Inventory;
 
 namespace Inventory.API.Endpoints;
 
