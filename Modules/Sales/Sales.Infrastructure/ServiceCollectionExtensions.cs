@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +43,17 @@ public static class ServiceCollectionExtensions
         });
 
         return services;
+    }
+
+    public static IEndpointRouteBuilder MapSalesModuleEndpoints(this IEndpointRouteBuilder app)
+    {
+        // These are imported from Sales.API.Endpoints if we add the reference, 
+        // but to avoid circular dependencies, we can either move them to Infrastructure/Endpoints
+        // or just accept that Sales.API is the main entry point for the standalone module.
+        // For the "Web.API" (Monolith/Host) approach, we should move the Map calls or refer to them.
+        
+        // Since the Map methods are static in Sales.API, Web.API would need a reference to Sales.API.
+        return app;
     }
 
     private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
