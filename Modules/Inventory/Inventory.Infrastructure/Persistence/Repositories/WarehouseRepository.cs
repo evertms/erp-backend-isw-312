@@ -12,4 +12,14 @@ public class WarehouseRepository(InventoryDbContext dbContext) : IWarehouseRepos
             .Where(w => w.CompanyId == companyId && w.IsActive)
             .ToListAsync(cancellationToken);
     }
+
+    public Task<Warehouse?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+        return dbContext.Warehouses.FirstOrDefaultAsync(w => w.Id == id, cancellationToken);
+    }
+
+    public Task<Warehouse?> GetByCenAsync(string cen, CancellationToken cancellationToken = default)
+    {
+        return dbContext.Warehouses.FirstOrDefaultAsync(w => w.Cen == cen, cancellationToken);
+    }
 }

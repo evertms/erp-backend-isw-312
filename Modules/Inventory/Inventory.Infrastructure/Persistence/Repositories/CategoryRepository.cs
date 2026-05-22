@@ -13,9 +13,14 @@ public class CategoryRepository(InventoryDbContext context) : ICategoryRepositor
             .ToListAsync(cancellationToken);
     }
 
-    public Task<Category?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<Category?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         return context.Categories.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+    }
+
+    public Task<Category?> GetByCenAsync(string cen, CancellationToken cancellationToken)
+    {
+        return context.Categories.FirstOrDefaultAsync(c => c.Cen == cen, cancellationToken);
     }
 
     public async Task AddAsync(Category category, CancellationToken cancellationToken)

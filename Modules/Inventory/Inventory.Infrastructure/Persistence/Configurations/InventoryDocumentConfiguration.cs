@@ -10,6 +10,9 @@ public class InventoryDocumentConfiguration : IEntityTypeConfiguration<Inventory
     {
         builder.ToTable("inventory_documents");
         builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Cen).IsRequired().HasMaxLength(50);
+        builder.HasIndex(x => x.Cen).IsUnique();
         
         builder.Property(x => x.Type).HasConversion<string>();
         builder.Property(x => x.Status).HasConversion<string>();
@@ -30,6 +33,9 @@ public class InventoryDocumentLineConfiguration : IEntityTypeConfiguration<Inven
     {
         builder.ToTable("inventory_document_lines");
         builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Cen).IsRequired().HasMaxLength(50);
+        builder.HasIndex(x => x.Cen).IsUnique();
         
         builder.Property(x => x.Quantity).HasPrecision(18, 4);
 

@@ -4,11 +4,12 @@ namespace Inventory.Domain.Entities;
 
 public class Product
 {
-    public Guid Id { get; private set; }
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
     public Guid CompanyId { get; private set; } // Logical ref to Core
-    public Guid CategoryId { get; private set; }
-    public Guid UnitId { get; private set; }
-    public Guid? SupplierId { get; private set; }
+    public int CategoryId { get; private set; }
+    public int UnitId { get; private set; }
+    public int? SupplierId { get; private set; }
     
     public string? Code { get; private set; }
     public string Name { get; private set; } = null!;
@@ -24,9 +25,9 @@ public class Product
 
     protected Product() { }
 
-    private Product(Guid id, Guid companyId, Guid categoryId, Guid unitId, Guid? supplierId, string? code, string name, decimal price, ProductStatus status, string? imageUrl, decimal minStockAlert, DateTime createdAt)
+    private Product(string cen, Guid companyId, int categoryId, int unitId, int? supplierId, string? code, string name, decimal price, ProductStatus status, string? imageUrl, decimal minStockAlert, DateTime createdAt)
     {
-        Id = id;
+        Cen = cen;
         CompanyId = companyId;
         CategoryId = categoryId;
         UnitId = unitId;
@@ -40,13 +41,14 @@ public class Product
         CreatedAt = createdAt;
     }
 
-    public static Product Create(Guid companyId, Guid categoryId, Guid unitId, string name, decimal price, string? code = null, Guid? supplierId = null, string? imageUrl = null, decimal minStockAlert = 0)
+    public static Product Create(Guid companyId, int categoryId, int unitId, string name, decimal price, string? code = null, int? supplierId = null, string? imageUrl = null, decimal minStockAlert = 0)
     {
         Validate(name, categoryId, unitId, price);
-        return new Product(Guid.NewGuid(), companyId, categoryId, unitId, supplierId, code, name, price, ProductStatus.Activo, imageUrl, minStockAlert, DateTime.UtcNow);
+        var cen = $"PROD-{Guid.CreateVersion7()}";
+        return new Product(cen, companyId, categoryId, unitId, supplierId, code, name, price, ProductStatus.Activo, imageUrl, minStockAlert, DateTime.UtcNow);
     }
 
-    public void Update(string name, Guid categoryId, Guid unitId, decimal price, string? code, Guid? supplierId, string? imageUrl, decimal minStockAlert)
+    public void Update(string name, int categoryId, int unitId, decimal price, string? code, int? supplierId, string? imageUrl, decimal minStockAlert)
     {
         Validate(name, categoryId, unitId, price);
         
@@ -73,15 +75,15 @@ public class Product
         }
     }
     
-    private static void Validate(string name, Guid categoryId, Guid unitId, decimal price)
+    private static void Validate(string name, int categoryId, int unitId, decimal price)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("El nombre del producto es obligatorio.", nameof(name));
         
-        if (categoryId == Guid.Empty)
+        if (categoryId <= 0)
             throw new ArgumentException("La categoría es obligatoria.", nameof(categoryId));
         
-        if (unitId == Guid.Empty)
+        if (unitId <= 0)
             throw new ArgumentException("La unidad de medida es obligatoria.", nameof(unitId));
             
         if (price <= 0)

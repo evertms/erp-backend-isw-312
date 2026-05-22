@@ -13,9 +13,14 @@ public class UnitRepository(InventoryDbContext context) : IUnitRepository
             .ToListAsync(cancellationToken);
     }
 
-    public Task<Unit?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<Unit?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         return context.Units.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+    }
+
+    public Task<Unit?> GetByCenAsync(string cen, CancellationToken cancellationToken)
+    {
+        return context.Units.FirstOrDefaultAsync(u => u.Cen == cen, cancellationToken);
     }
 
     public async Task<bool> IsNameUniqueAsync(Guid companyId, string name, CancellationToken cancellationToken)

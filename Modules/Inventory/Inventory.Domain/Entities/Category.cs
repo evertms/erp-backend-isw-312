@@ -2,16 +2,17 @@ namespace Inventory.Domain.Entities;
 
 public class Category
 {
-    public Guid Id { get; private set; }
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
     public Guid CompanyId { get; private set; } // Logical ref to Core
     public string Name { get; private set; } = null!;
     public string? Description { get; private set; }
 
     protected Category() { }
 
-    private Category(Guid id, Guid companyId, string name, string? description)
+    private Category(string cen, Guid companyId, string name, string? description)
     {
-        Id = id;
+        Cen = cen;
         CompanyId = companyId;
         Name = name;
         Description = description;
@@ -25,7 +26,8 @@ public class Category
             throw new ArgumentException("El nombre de la categoría no puede estar vacío.", nameof(name));
         }
 
-        return new Category(Guid.NewGuid(), companyId, name, description);
+        var cen = $"CAT-{Guid.CreateVersion7()}";
+        return new Category(cen, companyId, name, description);
     }
 
     public void Update(string name, string? description)

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Inventory.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20260328023016_InitialInventory")]
-    partial class InitialInventory
+    [Migration("20260522164057_InitialInventoryRefactored")]
+    partial class InitialInventoryRefactored
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,30 +28,49 @@ namespace Inventory.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Inventory.Domain.Entities.Category", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cen")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", "inventory");
+                    b.HasIndex("Cen")
+                        .IsUnique();
+
+                    b.ToTable("categories", "inventory");
                 });
 
             modelBuilder.Entity("Inventory.Domain.Entities.InventoryDocument", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cen")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
@@ -73,10 +92,13 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("WarehouseId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Cen")
+                        .IsUnique();
 
                     b.HasIndex("WarehouseId");
 
@@ -85,21 +107,31 @@ namespace Inventory.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Inventory.Domain.Entities.InventoryDocumentLine", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
 
-                    b.Property<Guid>("DocumentId")
-                        .HasColumnType("uuid");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("Cen")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("DocumentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Quantity")
                         .HasPrecision(18, 4)
                         .HasColumnType("numeric(18,4)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Cen")
+                        .IsUnique();
 
                     b.HasIndex("DocumentId");
 
@@ -110,19 +142,26 @@ namespace Inventory.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Inventory.Domain.Entities.KardexMovement", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Balance")
                         .HasPrecision(18, 4)
                         .HasColumnType("numeric(18,4)");
 
+                    b.Property<string>("Cen")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("DocumentId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("DocumentId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("MovementDate")
                         .HasColumnType("timestamp with time zone");
@@ -131,8 +170,8 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Quantity")
                         .HasPrecision(18, 4)
@@ -141,10 +180,13 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                     b.Property<string>("Reason")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("WarehouseId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Cen")
+                        .IsUnique();
 
                     b.HasIndex("DocumentId");
 
@@ -157,12 +199,19 @@ namespace Inventory.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Inventory.Domain.Entities.Product", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uuid");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Cen")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Code")
                         .HasColumnType("text");
@@ -192,15 +241,18 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("SupplierId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("integer");
 
-                    b.Property<Guid>("UnitId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("UnitId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("Cen")
+                        .IsUnique();
 
                     b.HasIndex("SupplierId");
 
@@ -211,9 +263,16 @@ namespace Inventory.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Inventory.Domain.Entities.ProductStock", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cen")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
@@ -225,13 +284,16 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
 
-                    b.Property<Guid>("WarehouseId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Cen")
+                        .IsUnique();
 
                     b.HasIndex("WarehouseId");
 
@@ -243,55 +305,86 @@ namespace Inventory.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Inventory.Domain.Entities.Supplier", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cen")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("ContactInfo")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suppliers", "inventory");
+                    b.HasIndex("Cen")
+                        .IsUnique();
+
+                    b.ToTable("suppliers", "inventory");
                 });
 
             modelBuilder.Entity("Inventory.Domain.Entities.Unit", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cen")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Units", "inventory");
+                    b.HasIndex("Cen")
+                        .IsUnique();
+
+                    b.ToTable("units", "inventory");
                 });
 
             modelBuilder.Entity("Inventory.Domain.Entities.Warehouse", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cen")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
@@ -300,15 +393,20 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Location")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Warehouses", "inventory");
+                    b.HasIndex("Cen")
+                        .IsUnique();
+
+                    b.ToTable("warehouses", "inventory");
                 });
 
             modelBuilder.Entity("Inventory.Domain.Entities.InventoryDocument", b =>

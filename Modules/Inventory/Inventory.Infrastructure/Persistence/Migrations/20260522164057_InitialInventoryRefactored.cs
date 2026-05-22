@@ -1,12 +1,13 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Inventory.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialInventory : Migration
+    public partial class InitialInventoryRefactored : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,65 +16,73 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 name: "inventory");
 
             migrationBuilder.CreateTable(
-                name: "Categories",
+                name: "categories",
                 schema: "inventory",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true)
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.PrimaryKey("PK_categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Suppliers",
+                name: "suppliers",
                 schema: "inventory",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    ContactInfo = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ContactInfo = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Suppliers", x => x.Id);
+                    table.PrimaryKey("PK_suppliers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Units",
+                name: "units",
                 schema: "inventory",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Code = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Code = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Units", x => x.Id);
+                    table.PrimaryKey("PK_units", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Warehouses",
+                name: "warehouses",
                 schema: "inventory",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Location = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Location = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Warehouses", x => x.Id);
+                    table.PrimaryKey("PK_warehouses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -81,11 +90,13 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 schema: "inventory",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UnitId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SupplierId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
+                    UnitId = table.Column<int>(type: "integer", nullable: false),
+                    SupplierId = table.Column<int>(type: "integer", nullable: true),
                     Code = table.Column<string>(type: "text", nullable: true),
                     Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     Price = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
@@ -98,23 +109,23 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_products_Categories_CategoryId",
+                        name: "FK_products_categories_CategoryId",
                         column: x => x.CategoryId,
                         principalSchema: "inventory",
-                        principalTable: "Categories",
+                        principalTable: "categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_products_Suppliers_SupplierId",
+                        name: "FK_products_suppliers_SupplierId",
                         column: x => x.SupplierId,
                         principalSchema: "inventory",
-                        principalTable: "Suppliers",
+                        principalTable: "suppliers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_products_Units_UnitId",
+                        name: "FK_products_units_UnitId",
                         column: x => x.UnitId,
                         principalSchema: "inventory",
-                        principalTable: "Units",
+                        principalTable: "units",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -124,9 +135,11 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 schema: "inventory",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    WarehouseId = table.Column<Guid>(type: "uuid", nullable: false),
+                    WarehouseId = table.Column<int>(type: "integer", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
                     DocumentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -137,10 +150,10 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_inventory_documents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_inventory_documents_Warehouses_WarehouseId",
+                        name: "FK_inventory_documents_warehouses_WarehouseId",
                         column: x => x.WarehouseId,
                         principalSchema: "inventory",
-                        principalTable: "Warehouses",
+                        principalTable: "warehouses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -150,10 +163,12 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 schema: "inventory",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
-                    WarehouseId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    WarehouseId = table.Column<int>(type: "integer", nullable: false),
                     CurrentQuantity = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: false),
                     LastUpdated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -161,17 +176,17 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_product_stocks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_product_stocks_Warehouses_WarehouseId",
-                        column: x => x.WarehouseId,
-                        principalSchema: "inventory",
-                        principalTable: "Warehouses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_product_stocks_products_ProductId",
                         column: x => x.ProductId,
                         principalSchema: "inventory",
                         principalTable: "products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_product_stocks_warehouses_WarehouseId",
+                        column: x => x.WarehouseId,
+                        principalSchema: "inventory",
+                        principalTable: "warehouses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -181,9 +196,11 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 schema: "inventory",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    DocumentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    DocumentId = table.Column<int>(type: "integer", nullable: false),
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
                     Quantity = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: false)
                 },
                 constraints: table =>
@@ -210,11 +227,13 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 schema: "inventory",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
-                    WarehouseId = table.Column<Guid>(type: "uuid", nullable: false),
-                    DocumentId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    WarehouseId = table.Column<int>(type: "integer", nullable: false),
+                    DocumentId = table.Column<int>(type: "integer", nullable: true),
                     MovementType = table.Column<string>(type: "text", nullable: false),
                     Quantity = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: false),
                     Balance = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: false),
@@ -224,13 +243,6 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_kardex_movements", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_kardex_movements_Warehouses_WarehouseId",
-                        column: x => x.WarehouseId,
-                        principalSchema: "inventory",
-                        principalTable: "Warehouses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_kardex_movements_inventory_documents_DocumentId",
                         column: x => x.DocumentId,
@@ -245,7 +257,28 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         principalTable: "products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_kardex_movements_warehouses_WarehouseId",
+                        column: x => x.WarehouseId,
+                        principalSchema: "inventory",
+                        principalTable: "warehouses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_categories_Cen",
+                schema: "inventory",
+                table: "categories",
+                column: "Cen",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_inventory_document_lines_Cen",
+                schema: "inventory",
+                table: "inventory_document_lines",
+                column: "Cen",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_inventory_document_lines_DocumentId",
@@ -260,10 +293,24 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_inventory_documents_Cen",
+                schema: "inventory",
+                table: "inventory_documents",
+                column: "Cen",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_inventory_documents_WarehouseId",
                 schema: "inventory",
                 table: "inventory_documents",
                 column: "WarehouseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_kardex_movements_Cen",
+                schema: "inventory",
+                table: "kardex_movements",
+                column: "Cen",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_kardex_movements_DocumentId",
@@ -282,6 +329,13 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 schema: "inventory",
                 table: "kardex_movements",
                 column: "WarehouseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_product_stocks_Cen",
+                schema: "inventory",
+                table: "product_stocks",
+                column: "Cen",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_product_stocks_ProductId_WarehouseId",
@@ -303,6 +357,13 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_products_Cen",
+                schema: "inventory",
+                table: "products",
+                column: "Cen",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_products_SupplierId",
                 schema: "inventory",
                 table: "products",
@@ -313,6 +374,27 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 schema: "inventory",
                 table: "products",
                 column: "UnitId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_suppliers_Cen",
+                schema: "inventory",
+                table: "suppliers",
+                column: "Cen",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_units_Cen",
+                schema: "inventory",
+                table: "units",
+                column: "Cen",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_warehouses_Cen",
+                schema: "inventory",
+                table: "warehouses",
+                column: "Cen",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -339,19 +421,19 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 schema: "inventory");
 
             migrationBuilder.DropTable(
-                name: "Warehouses",
+                name: "warehouses",
                 schema: "inventory");
 
             migrationBuilder.DropTable(
-                name: "Categories",
+                name: "categories",
                 schema: "inventory");
 
             migrationBuilder.DropTable(
-                name: "Suppliers",
+                name: "suppliers",
                 schema: "inventory");
 
             migrationBuilder.DropTable(
-                name: "Units",
+                name: "units",
                 schema: "inventory");
         }
     }

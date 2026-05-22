@@ -2,16 +2,17 @@ namespace Inventory.Domain.Entities;
 
 public class Unit
 {
-    public Guid Id { get; private set; }
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
     public Guid CompanyId { get; private set; } // Logical ref to Core
     public string Name { get; private set; } = null!;
     public string Code { get; private set; } = null!;
 
     protected Unit() { }
 
-    private Unit(Guid id, Guid companyId, string name, string code)
+    private Unit(string cen, Guid companyId, string name, string code)
     {
-        Id = id;
+        Cen = cen;
         CompanyId = companyId;
         Name = name;
         Code = code;
@@ -27,7 +28,8 @@ public class Unit
         if (string.IsNullOrWhiteSpace(code))
             throw new ArgumentException("El código no puede estar vacío.", nameof(code));
 
-        return new Unit(Guid.NewGuid(), companyId, name, code);
+        var cen = $"UNT-{Guid.CreateVersion7()}";
+        return new Unit(cen, companyId, name, code);
     }
 
     public void Update(string name, string code)

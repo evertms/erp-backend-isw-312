@@ -7,20 +7,20 @@ namespace Inventory.Infrastructure.Persistence.Repositories;
 
 public class ProductStockRepository(InventoryDbContext dbContext) : IProductStockRepository
 {
-    public async Task<List<ProductStock>> GetStockByProductIdAsync(Guid productId, CancellationToken cancellationToken = default)
+    public async Task<List<ProductStock>> GetStockByProductIdAsync(int productId, CancellationToken cancellationToken = default)
     {
         return await dbContext.ProductStocks
             .Where(s => s.ProductId == productId)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<ProductStock?> GetStockByProductAndWarehouseAsync(Guid productId, Guid warehouseId, CancellationToken cancellationToken = default)
+    public async Task<ProductStock?> GetStockByProductAndWarehouseAsync(int productId, int warehouseId, CancellationToken cancellationToken = default)
     {
         return await dbContext.ProductStocks
             .FirstOrDefaultAsync(s => s.ProductId == productId && s.WarehouseId == warehouseId, cancellationToken);
     }
 
-    public async Task<List<ProductStock>> GetStockAsync(Guid companyId, Guid? productId = null, Guid? warehouseId = null, CancellationToken cancellationToken = default)
+    public async Task<List<ProductStock>> GetStockAsync(Guid companyId, int? productId = null, int? warehouseId = null, CancellationToken cancellationToken = default)
     {
         var query = dbContext.ProductStocks
             .Include(ps => ps.Product)
@@ -47,5 +47,10 @@ public class ProductStockRepository(InventoryDbContext dbContext) : IProductStoc
             .Include(ps => ps.Product)
             .Where(ps => ps.Product.CompanyId == companyId && ps.Product.Status == ProductStatus.Activo)
             .ToListAsync(cancellationToken);
+    }
+
+    public void Add(ProductStock stock)
+    {
+        dbContext.ProductStocks.Add(stock);
     }
 }

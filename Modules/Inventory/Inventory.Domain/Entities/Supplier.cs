@@ -2,7 +2,8 @@ namespace Inventory.Domain.Entities;
 
 public class Supplier
 {
-    public Guid Id { get; private set; }
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
     public Guid CompanyId { get; private set; } // Logical ref to Core
     public string Name { get; private set; } = null!;
     public string? ContactInfo { get; private set; }
@@ -10,9 +11,9 @@ public class Supplier
 
     protected Supplier() { }
 
-    private Supplier(Guid id, Guid companyId, string name, string? contactInfo, bool isActive)
+    private Supplier(string cen, Guid companyId, string name, string? contactInfo, bool isActive)
     {
-        Id = id;
+        Cen = cen;
         CompanyId = companyId;
         Name = name;
         ContactInfo = contactInfo;
@@ -24,6 +25,7 @@ public class Supplier
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("El nombre del proveedor no puede estar vacío.", nameof(name));
 
-        return new Supplier(Guid.NewGuid(), companyId, name, contactInfo, true);
+        var cen = $"SUP-{Guid.CreateVersion7()}";
+        return new Supplier(cen, companyId, name, contactInfo, true);
     }
 }

@@ -22,7 +22,7 @@ public class ProductRepository(InventoryDbContext dbContext) : IProductRepositor
     public async Task<List<Product>> SearchAsync(
         Guid companyId, 
         string? searchTerm = null, 
-        Guid? categoryId = null, 
+        int? categoryId = null, 
         ProductStatus? status = null, 
         CancellationToken cancellationToken = default)
     {
@@ -50,9 +50,29 @@ public class ProductRepository(InventoryDbContext dbContext) : IProductRepositor
         return await query.ToListAsync(cancellationToken);
     }
 
-    public Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        return dbContext.Products.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+        return dbContext.Products
+            .Include(p => p.Category)
+            .Include(p => p.Unit)
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+    }
+
+    public Task<Product?> GetByCenAsync(string cen, CancellationToken cancellationToken)
+    {
+        return dbContext.Products
+            .Include(p => p.Category)
+            .Include(p => p.Unit)
+            .FirstOrDefaultAsync(p => p.Cen == cen, cancellationToken);
+    }
+
+    public Task<List<Product>> GetByCensAsync(Guid companyId, List<string> cens, CancellationToken cancellationToken)
+    {
+        return dbContext.Products
+            .Include(p => p.Category)
+            .Include(p => p.Unit)
+            .Where(p => p.CompanyId == companyId && cens.Contains(p.Cen))
+            .ToListAsync(cancellationToken);
     }
 
     public async Task AddAsync(Product product, CancellationToken cancellationToken)

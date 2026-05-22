@@ -10,10 +10,12 @@ public interface IProductRepository
     Task<List<Product>> SearchAsync(
         Guid companyId, 
         string? searchTerm = null, 
-        Guid? categoryId = null, 
+        int? categoryId = null, 
         ProductStatus? status = null, 
         CancellationToken cancellationToken = default);
-    Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<Product?> GetByCenAsync(string cen, CancellationToken cancellationToken);
+    Task<List<Product>> GetByCensAsync(Guid companyId, List<string> cens, CancellationToken cancellationToken);
     Task AddAsync(Product product, CancellationToken cancellationToken);
     Task UpdateAsync(Product product, CancellationToken cancellationToken);
 }

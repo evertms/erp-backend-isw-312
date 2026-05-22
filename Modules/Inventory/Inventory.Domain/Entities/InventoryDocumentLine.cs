@@ -2,9 +2,10 @@ namespace Inventory.Domain.Entities;
 
 public class InventoryDocumentLine
 {
-    public Guid Id { get; private set; }
-    public Guid DocumentId { get; private set; }
-    public Guid ProductId { get; private set; }
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
+    public int DocumentId { get; private set; }
+    public int ProductId { get; private set; }
     public decimal Quantity { get; private set; }
 
     public virtual InventoryDocument Document { get; private set; } = null!;
@@ -12,16 +13,17 @@ public class InventoryDocumentLine
 
     protected InventoryDocumentLine() { }
 
-    private InventoryDocumentLine(Guid id, Guid documentId, Guid productId, decimal quantity)
+    private InventoryDocumentLine(string cen, int documentId, int productId, decimal quantity)
     {
-        Id = id;
+        Cen = cen;
         DocumentId = documentId;
         ProductId = productId;
         Quantity = quantity;
     }
 
-    internal static InventoryDocumentLine Create(Guid documentId, Guid productId, decimal quantity)
+    internal static InventoryDocumentLine Create(int documentId, int productId, decimal quantity)
     {
-        return new InventoryDocumentLine(Guid.NewGuid(), documentId, productId, quantity);
+        var cen = $"LINE-{Guid.CreateVersion7()}";
+        return new InventoryDocumentLine(cen, documentId, productId, quantity);
     }
 }

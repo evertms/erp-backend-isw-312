@@ -5,7 +5,8 @@ namespace Inventory.Domain.Repositories;
 public interface IUnitRepository
 {
     Task<List<Unit>> GetAllAsync(Guid companyId, CancellationToken cancellationToken);
-    Task<Unit?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<Unit?> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<Unit?> GetByCenAsync(string cen, CancellationToken cancellationToken);
     Task<bool> IsNameUniqueAsync(Guid companyId, string name, CancellationToken cancellationToken);
     Task<bool> IsCodeUniqueAsync(Guid companyId, string code, CancellationToken cancellationToken);
     Task AddAsync(Unit unit, CancellationToken cancellationToken);

@@ -2,7 +2,8 @@ namespace Inventory.Domain.Entities;
 
 public class Warehouse
 {
-    public Guid Id { get; private set; }
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
     public Guid CompanyId { get; private set; } // Logical ref to Core
     public string Name { get; private set; } = null!;
     public string? Location { get; private set; }
@@ -10,9 +11,9 @@ public class Warehouse
 
     protected Warehouse() { }
 
-    private Warehouse(Guid id, Guid companyId, string name, string? location, bool isActive)
+    private Warehouse(string cen, Guid companyId, string name, string? location, bool isActive)
     {
-        Id = id;
+        Cen = cen;
         CompanyId = companyId;
         Name = name;
         Location = location;
@@ -24,6 +25,7 @@ public class Warehouse
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("El nombre del almacén no puede estar vacío.", nameof(name));
 
-        return new Warehouse(Guid.NewGuid(), companyId, name, location, true);
+        var cen = $"WH-{Guid.CreateVersion7()}";
+        return new Warehouse(cen, companyId, name, location, true);
     }
 }

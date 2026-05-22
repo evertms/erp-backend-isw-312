@@ -10,6 +10,9 @@ public class KardexMovementConfiguration : IEntityTypeConfiguration<KardexMoveme
     {
         builder.ToTable("kardex_movements");
         builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Cen).IsRequired().HasMaxLength(50);
+        builder.HasIndex(x => x.Cen).IsUnique();
         
         builder.Property(x => x.MovementType).HasConversion<string>();
         builder.Property(x => x.Quantity).HasPrecision(18, 4);

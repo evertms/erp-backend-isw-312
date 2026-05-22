@@ -4,11 +4,12 @@ namespace Inventory.Domain.Entities;
 
 public class KardexMovement
 {
-    public Guid Id { get; private set; }
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
     public Guid CompanyId { get; private set; } // Logical ref to Core
-    public Guid ProductId { get; private set; }
-    public Guid WarehouseId { get; private set; }
-    public Guid? DocumentId { get; private set; }
+    public int ProductId { get; private set; }
+    public int WarehouseId { get; private set; }
+    public int? DocumentId { get; private set; }
     
     public MovementType MovementType { get; private set; }
     public decimal Quantity { get; private set; }
@@ -22,9 +23,9 @@ public class KardexMovement
 
     protected KardexMovement() { }
 
-    private KardexMovement(Guid id, Guid companyId, Guid productId, Guid warehouseId, Guid? documentId, MovementType movementType, decimal quantity, decimal balance, string? reason, DateTime movementDate)
+    private KardexMovement(string cen, Guid companyId, int productId, int warehouseId, int? documentId, MovementType movementType, decimal quantity, decimal balance, string? reason, DateTime movementDate)
     {
-        Id = id;
+        Cen = cen;
         CompanyId = companyId;
         ProductId = productId;
         WarehouseId = warehouseId;
@@ -36,7 +37,7 @@ public class KardexMovement
         MovementDate = movementDate;
     }
 
-    public static KardexMovement Create(Guid companyId, Guid productId, Guid warehouseId, MovementType type, decimal quantity, decimal currentBalance, Guid? documentId = null, string? reason = null)
+    public static KardexMovement Create(Guid companyId, int productId, int warehouseId, MovementType type, decimal quantity, decimal currentBalance, int? documentId = null, string? reason = null)
     {
         if (quantity <= 0)
             throw new ArgumentException("La cantidad debe ser mayor a 0.", nameof(quantity));
@@ -48,6 +49,7 @@ public class KardexMovement
         if (newBalance < 0)
             throw new InvalidOperationException($"El movimiento de salida dejaría el saldo negativo. Saldo actual: {currentBalance}, Cantidad: {quantity}");
 
-        return new KardexMovement(Guid.NewGuid(), companyId, productId, warehouseId, documentId, type, quantity, newBalance, reason, DateTime.UtcNow);
+        var cen = $"MOV-{Guid.CreateVersion7()}";
+        return new KardexMovement(cen, companyId, productId, warehouseId, documentId, type, quantity, newBalance, reason, DateTime.UtcNow);
     }
 }
