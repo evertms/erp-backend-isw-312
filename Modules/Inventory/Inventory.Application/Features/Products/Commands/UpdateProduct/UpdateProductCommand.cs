@@ -3,14 +3,14 @@ using MediatR;
 namespace Inventory.Application.Features.Products.Commands.UpdateProduct;
 
 public record UpdateProductCommand(
-    Guid Id,
+    string ProductCen,
     Guid CompanyId,
     string Name,
-    Guid CategoryId,
-    Guid UnitId,
+    string CategoryCen,
+    string UnitCen,
     decimal Price,
     string? Code,
-    Guid? SupplierId,
+    string? SupplierCen,
     string? ImageUrl,
     decimal MinStockAlert
 ) : IRequest<bool>;

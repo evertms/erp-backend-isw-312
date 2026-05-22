@@ -9,7 +9,7 @@ public class UpdateCategoryHandler(
 {
     public async Task<bool> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var category = await categoryRepository.GetByIdAsync(request.Id, cancellationToken);
+        var category = await categoryRepository.GetByCenAsync(request.CategoryCen, cancellationToken);
 
         if (category == null || category.CompanyId != request.CompanyId)
         {

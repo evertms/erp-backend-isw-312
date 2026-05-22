@@ -8,19 +8,19 @@ public class CreateProductHandler(
     IProductRepository productRepository,
     ICategoryRepository categoryRepository,
     IUnitRepository unitRepository,
-    IUnitOfWork unitOfWork) : IRequestHandler<CreateProductCommand, Guid>
+    IUnitOfWork unitOfWork) : IRequestHandler<CreateProductCommand, string>
 {
-    public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         // Validación de existencia de Categoría
-        var category = await categoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
+        var category = await categoryRepository.GetByCenAsync(request.CategoryCen, cancellationToken);
         if (category == null || category.CompanyId != request.CompanyId)
         {
             throw new ArgumentException("La categoría especificada no existe o no pertenece a la empresa.");
         }
 
         // Validación de existencia de Unidad de medida
-        var unit = await unitRepository.GetByIdAsync(request.UnitId, cancellationToken);
+        var unit = await unitRepository.GetByCenAsync(request.UnitCen, cancellationToken);
         if (unit == null || unit.CompanyId != request.CompanyId)
         {
             throw new ArgumentException("La unidad de medida especificada no existe o no pertenece a la empresa.");
@@ -29,12 +29,12 @@ public class CreateProductHandler(
         // El dominio se encarga de validar: nombre, price > 0, etc.
         var product = Product.Create(
             request.CompanyId,
-            request.CategoryId,
-            request.UnitId,
+            category.Id,
+            unit.Id,
             request.Name,
             request.Price,
             request.Code,
-            request.SupplierId,
+            null, // TODO: Map SupplierCen if needed
             request.ImageUrl,
             request.MinStockAlert
         );
@@ -42,6 +42,6 @@ public class CreateProductHandler(
         await productRepository.AddAsync(product, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return product.Id;
+        return product.Cen;
     }
 }

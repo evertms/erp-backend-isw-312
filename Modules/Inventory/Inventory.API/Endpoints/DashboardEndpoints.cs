@@ -8,7 +8,7 @@ public static class DashboardEndpoints
 {
     public static void MapDashboardEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/inventory/companies/{companyCen}/dashboard").WithTags("Inventory - Dashboard");
+        var group = app.MapGroup("/api/inventory/companies/{companyCen}/dashboard").WithTags("Inventory Catalog Contract");
 
         group.MapGet("/", async (string companyCen, IMediator mediator) =>
         {
@@ -17,8 +17,6 @@ public static class DashboardEndpoints
 
             var metrics = await mediator.Send(new GetDashboardMetricsQuery(companyId));
             return Results.Ok(metrics);
-        })
-        .WithName("GetDashboardMetrics")
-        .WithSummary("Retrieves the dashboard metrics for a specific company (total products, in-stock quantity, low stock alerts).");
+        });
     }
 }

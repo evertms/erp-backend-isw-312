@@ -6,4 +6,4 @@ public record CreateCategoryCommand(
     Guid CompanyId,
     string Name,
     string? Description
-) : IRequest<Guid>;
+) : IRequest<string>;

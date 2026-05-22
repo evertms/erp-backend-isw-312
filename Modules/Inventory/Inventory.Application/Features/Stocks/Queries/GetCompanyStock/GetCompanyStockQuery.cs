@@ -5,6 +5,6 @@ namespace Inventory.Application.Features.Stocks.Queries.GetCompanyStock;
 
 public record GetCompanyStockQuery(
     Guid CompanyId,
-    Guid? ProductId = null,
-    Guid? WarehouseId = null
+    string? ProductCen = null,
+    string? WarehouseCen = null
 ) : IRequest<List<StockItemContractDto>>;

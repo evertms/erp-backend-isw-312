@@ -9,8 +9,8 @@ public class UpdateProductStatusHandler(
 {
     public async Task<bool> Handle(UpdateProductStatusCommand request, CancellationToken cancellationToken)
     {
-        var product = await productRepository.GetByIdAsync(request.Id, cancellationToken);
-        
+        var product = await productRepository.GetByCenAsync(request.ProductCen, cancellationToken);
+
         if (product == null || product.CompanyId != request.CompanyId)
         {
             return false;

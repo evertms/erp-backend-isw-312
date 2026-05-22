@@ -9,7 +9,7 @@ public class UpdateUnitHandler(
 {
     public async Task<bool> Handle(UpdateUnitCommand request, CancellationToken cancellationToken)
     {
-        var unit = await unitRepository.GetByIdAsync(request.Id, cancellationToken);
+        var unit = await unitRepository.GetByCenAsync(request.UnitCen, cancellationToken);
 
         if (unit == null || unit.CompanyId != request.CompanyId)
         {

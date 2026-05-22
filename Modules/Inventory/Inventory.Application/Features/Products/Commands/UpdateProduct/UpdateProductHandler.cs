@@ -11,7 +11,7 @@ public class UpdateProductHandler(
 {
     public async Task<bool> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var product = await productRepository.GetByIdAsync(request.Id, cancellationToken);
+        var product = await productRepository.GetByCenAsync(request.ProductCen, cancellationToken);
         
         if (product == null || product.CompanyId != request.CompanyId)
         {
@@ -19,32 +19,26 @@ public class UpdateProductHandler(
         }
 
         // Validate Category if changed
-        if (product.CategoryId != request.CategoryId)
+        var category = await categoryRepository.GetByCenAsync(request.CategoryCen, cancellationToken);
+        if (category == null || category.CompanyId != request.CompanyId)
         {
-            var category = await categoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
-            if (category == null || category.CompanyId != request.CompanyId)
-            {
-                throw new ArgumentException("La categoría especificada no existe o no pertenece a la empresa.");
-            }
+            throw new ArgumentException("La categoría especificada no existe o no pertenece a la empresa.");
         }
 
         // Validate Unit if changed
-        if (product.UnitId != request.UnitId)
+        var unit = await unitRepository.GetByCenAsync(request.UnitCen, cancellationToken);
+        if (unit == null || unit.CompanyId != request.CompanyId)
         {
-            var unit = await unitRepository.GetByIdAsync(request.UnitId, cancellationToken);
-            if (unit == null || unit.CompanyId != request.CompanyId)
-            {
-                throw new ArgumentException("La unidad de medida especificada no existe o no pertenece a la empresa.");
-            }
+            throw new ArgumentException("La unidad de medida especificada no existe o no pertenece a la empresa.");
         }
 
         product.Update(
             request.Name,
-            request.CategoryId,
-            request.UnitId,
+            category.Id,
+            unit.Id,
             request.Price,
             request.Code,
-            request.SupplierId,
+            null, // TODO: Map
             request.ImageUrl,
             request.MinStockAlert
         );

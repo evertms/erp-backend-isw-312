@@ -11,7 +11,7 @@ public class GetCategoriesHandler(ICategoryRepository categoryRepository) : IReq
         var categories = await categoryRepository.GetAllCategoriesAsync(request.CompanyId, cancellationToken);
 
         return categories
-            .Select(c => new CategoryContractDto(c.Id.ToString(), c.Name, c.Description, true))
+            .Select(c => new CategoryContractDto(c.Cen, c.Name, c.Description, true))
             .ToList();
     }
 }

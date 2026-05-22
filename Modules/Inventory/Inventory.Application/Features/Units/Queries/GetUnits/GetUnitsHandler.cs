@@ -11,7 +11,7 @@ public class GetUnitsHandler(IUnitRepository unitRepository) : IRequestHandler<G
         var units = await unitRepository.GetAllAsync(request.CompanyId, cancellationToken);
 
         return units
-            .Select(u => new UnitContractDto(u.Id.ToString(), u.Name, u.Code, true))
+            .Select(u => new UnitContractDto(u.Cen, u.Name, u.Code, true))
             .ToList();
     }
 }

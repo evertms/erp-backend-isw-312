@@ -3,7 +3,7 @@ using MediatR;
 namespace Inventory.Application.Features.Units.Commands.UpdateUnit;
 
 public record UpdateUnitCommand(
-    Guid Id,
+    string UnitCen,
     Guid CompanyId,
     string Name,
     string Code

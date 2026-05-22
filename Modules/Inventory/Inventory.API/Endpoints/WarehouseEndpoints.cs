@@ -8,7 +8,7 @@ public static class WarehouseEndpoints
 {
     public static void MapWarehouseEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/inventory/companies/{companyCen}/warehouses").WithTags("Inventory - Warehouses");
+        var group = app.MapGroup("/api/inventory/companies/{companyCen}/warehouses").WithTags("Inventory Catalog Contract");
 
         group.MapGet("/", async (string companyCen, IMediator mediator) =>
         {
@@ -17,8 +17,6 @@ public static class WarehouseEndpoints
 
             var warehouses = await mediator.Send(new GetCompanyWarehousesQuery(companyId));
             return Results.Ok(warehouses);
-        })
-        .WithName("GetCompanyWarehouses")
-        .WithSummary("Retrieves all active warehouses for a specific company.");
+        });
     }
 }

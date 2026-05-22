@@ -6,9 +6,9 @@ namespace Inventory.Application.Features.Units.Commands.CreateUnit;
 
 public class CreateUnitHandler(
     IUnitRepository unitRepository,
-    IUnitOfWork unitOfWork) : IRequestHandler<CreateUnitCommand, Guid>
+    IUnitOfWork unitOfWork) : IRequestHandler<CreateUnitCommand, string>
 {
-    public async Task<Guid> Handle(CreateUnitCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateUnitCommand request, CancellationToken cancellationToken)
     {
         // Validación de duplicidad (Criterio de Aceptación 2)
         var isNameUnique = await unitRepository.IsNameUniqueAsync(request.CompanyId, request.Name, cancellationToken);
@@ -28,6 +28,6 @@ public class CreateUnitHandler(
         await unitRepository.AddAsync(unit, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return unit.Id;
+        return unit.Cen;
     }
 }

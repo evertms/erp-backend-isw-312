@@ -1,7 +1,6 @@
 using Inventory.Application.Features.Units.Commands.CreateUnit;
 using Inventory.Application.Features.Units.Commands.UpdateUnit;
 using Inventory.Application.Features.Units.Queries.GetUnits;
-using Inventory.Application.Features.Units.Queries.GetUnitById;
 using MediatR;
 using Shared.Contracts.Inventory;
 
@@ -11,7 +10,7 @@ public static class UnitEndpoints
 {
     public static void MapUnitEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/inventory/companies/{companyCen}/units").WithTags("Inventory Units");
+        var group = app.MapGroup("/api/inventory/companies/{companyCen}/units").WithTags("Inventory Catalog Contract");
 
         group.MapPost("/", async (string companyCen, CreateUnitContractRequest request, IMediator mediator) =>
         {
@@ -21,9 +20,9 @@ public static class UnitEndpoints
                     return Results.BadRequest(new { Error = "CEN de empresa no válido." });
 
                 var command = new CreateUnitCommand(companyId, request.Name, request.Abbreviation ?? string.Empty);
-                var id = await mediator.Send(command);
+                var cen = await mediator.Send(command);
                 
-                return Results.Created($"/api/inventory/companies/{companyCen}/units/{id}", new UnitContractDto(id.ToString(), request.Name, request.Abbreviation, true));
+                return Results.Created($"/api/inventory/companies/{companyCen}/units/{cen}", new UnitContractDto(cen, request.Name, request.Abbreviation, true));
             }
             catch (ArgumentException ex)
             {
@@ -42,10 +41,7 @@ public static class UnitEndpoints
                 if (!Guid.TryParse(companyCen, out var companyId))
                     return Results.BadRequest(new { Error = "CEN de empresa no válido." });
 
-                if (!Guid.TryParse(unitCen, out var id))
-                    return Results.BadRequest(new { Error = "CEN de unidad no válido." });
-
-                var command = new UpdateUnitCommand(id, companyId, request.Name, request.Abbreviation ?? string.Empty);
+                var command = new UpdateUnitCommand(unitCen, companyId, request.Name, request.Abbreviation ?? string.Empty);
                 var result = await mediator.Send(command);
                 
                 return result 
@@ -69,15 +65,6 @@ public static class UnitEndpoints
 
             var result = await mediator.Send(new GetUnitsQuery(companyId));
             return Results.Ok(result);
-        });
-
-        group.MapGet("/{id:guid}", async (string companyCen, Guid id, IMediator mediator) =>
-        {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var result = await mediator.Send(new GetUnitByIdQuery(id, companyId));
-            return result is not null ? Results.Ok(result) : Results.NotFound();
         });
     }
 }

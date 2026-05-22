@@ -5,7 +5,9 @@ using Shared.Contracts.Inventory;
 
 namespace Inventory.Application.Features.Products.Queries.GetCompanyProducts;
 
-public class GetCompanyProductsHandler(IProductRepository productRepository) : IRequestHandler<GetCompanyProductsQuery, List<ProductContractDto>>
+public class GetCompanyProductsHandler(
+    IProductRepository productRepository,
+    ICategoryRepository categoryRepository) : IRequestHandler<GetCompanyProductsQuery, List<ProductContractDto>>
 {
     public async Task<List<ProductContractDto>> Handle(GetCompanyProductsQuery request, CancellationToken cancellationToken)
     {
@@ -15,21 +17,31 @@ public class GetCompanyProductsHandler(IProductRepository productRepository) : I
             statusEnum = parsedStatus;
         }
 
+        int? categoryId = null;
+        if (!string.IsNullOrEmpty(request.CategoryCen))
+        {
+            var category = await categoryRepository.GetByCenAsync(request.CategoryCen, cancellationToken);
+            if (category != null)
+            {
+                categoryId = category.Id;
+            }
+        }
+
         var products = await productRepository.SearchAsync(
             request.CompanyId, 
             request.Search, 
-            request.CategoryId, 
+            categoryId, 
             statusEnum, 
             cancellationToken);
 
         return products.Select(p => new ProductContractDto(
-            p.Id.ToString(),
+            p.Cen,
             p.Code ?? string.Empty,
             p.Name,
             null, // Description
-            p.CategoryId.ToString(),
+            p.Category.Cen,
             p.Category.Name,
-            p.UnitId.ToString(),
+            p.Unit.Cen,
             p.Unit.Name,
             (double)p.Price,
             null, // CostPrice

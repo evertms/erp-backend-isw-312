@@ -6,4 +6,4 @@ public record CreateUnitCommand(
     Guid CompanyId,
     string Name,
     string Code
-) : IRequest<Guid>;
+) : IRequest<string>;
