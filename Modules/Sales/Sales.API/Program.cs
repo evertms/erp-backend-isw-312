@@ -28,6 +28,7 @@ app.UseAuthorization();
 // Map endpoints
 app.MapTicketEndpoints();
 app.MapKdsEndpoints();
+app.MapDashboardEndpoints();
 app.MapPaymentMethodEndpoints();
 app.MapTaxConfigurationEndpoints();
 app.MapCatalogEndpoints();

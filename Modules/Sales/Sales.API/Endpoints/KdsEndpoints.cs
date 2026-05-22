@@ -1,3 +1,9 @@
+using MediatR;
+using Sales.Application.Features.Kds.Commands.UpdateItemStatus;
+using Sales.Application.Features.Kds.Queries.GetItems;
+using Sales.Application.Features.Kds.Queries.GetTeams;
+using Shared.Contracts.Sales;
+
 namespace Sales.API.Endpoints;
 
 public static class KdsEndpoints
@@ -6,6 +12,22 @@ public static class KdsEndpoints
     {
         var group = app.MapGroup("/api/sales/companies/{companyCen}/kds").WithTags("KdsContract");
 
-        group.MapGet("/teams", (string companyCen) => Results.Ok(new List<object>()));
+        group.MapGet("/teams", async (string companyCen, ISender sender) =>
+        {
+            var result = await sender.Send(new GetKdsTeamsQuery(companyCen));
+            return Results.Ok(result);
+        });
+
+        group.MapGet("/teams/{teamCen}/items", async (string companyCen, string teamCen, ISender sender) =>
+        {
+            var result = await sender.Send(new GetKdsItemsQuery(companyCen, teamCen));
+            return Results.Ok(result);
+        });
+
+        group.MapPatch("/items/{ticketItemCen}/status", async (string companyCen, string ticketItemCen, UpdateKdsItemStatusContractRequest request, ISender sender) =>
+        {
+            var result = await sender.Send(new UpdateKdsItemStatusCommand(companyCen, ticketItemCen, request));
+            return result ? Results.Ok() : Results.NotFound();
+        });
     }
 }
