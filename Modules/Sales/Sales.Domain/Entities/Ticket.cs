@@ -4,11 +4,13 @@ namespace Sales.Domain.Entities;
 
 public class Ticket
 {
-    public Guid Id { get; private set; }
-    public Guid CompanyId { get; private set; } // Logical Ref (Core)
-    public Guid? CustomerId { get; private set; } // Logical Ref (Core.Customers)
-    public Guid WaiterId { get; private set; } // Logical Ref (Core.Users)
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
+    public string CompanyCen { get; private set; } = null!; // Logical Ref (Core)
+    public string? CustomerCen { get; private set; } // Logical Ref (Core.Customers)
+    public string WaiterCen { get; private set; } = null!; // Logical Ref (Core.Users)
     
+    public int DailyNumber { get; private set; }
     public TicketStatus Status { get; private set; }
     public decimal Subtotal { get; private set; }
     public decimal TaxAmount { get; private set; }
@@ -26,26 +28,28 @@ public class Ticket
 
     protected Ticket() { }
 
-    private Ticket(Guid id, Guid companyId, Guid? customerId, Guid waiterId, decimal appliedTaxRate)
+    private Ticket(string cen, string companyCen, string? customerCen, string waiterCen, decimal appliedTaxRate, int dailyNumber)
     {
-        Id = id;
-        CompanyId = companyId;
-        CustomerId = customerId;
-        WaiterId = waiterId;
+        Cen = cen;
+        CompanyCen = companyCen;
+        CustomerCen = customerCen;
+        WaiterCen = waiterCen;
+        DailyNumber = dailyNumber;
         Status = TicketStatus.Open;
         AppliedTaxRate = appliedTaxRate;
         CreatedAt = DateTime.UtcNow;
     }
 
-    public static Ticket Create(Guid companyId, Guid waiterId, decimal currentTaxRate, Guid? customerId = null)
+    public static Ticket Create(string companyCen, string waiterCen, decimal currentTaxRate, int dailyNumber, string? customerCen = null)
     {
-        if (waiterId == Guid.Empty)
-            throw new ArgumentException("Es obligatorio asignar un mesero al ticket.", nameof(waiterId));
+        if (string.IsNullOrWhiteSpace(waiterCen))
+            throw new ArgumentException("Es obligatorio asignar un mesero al ticket.", nameof(waiterCen));
 
-        return new Ticket(Guid.NewGuid(), companyId, customerId, waiterId, currentTaxRate);
+        var cen = $"TICK-{Guid.CreateVersion7()}";
+        return new Ticket(cen, companyCen, customerCen, waiterCen, currentTaxRate, dailyNumber);
     }
 
-    public void AddLine(Guid productId, string productName, decimal quantity, decimal unitPrice, Station station, string? notes = null)
+    public void AddLine(string productCen, string productName, decimal quantity, decimal unitPrice, Station station, string? notes = null)
     {
         // Regla de Inmutabilidad del Ticket Pagado
         if (Status == TicketStatus.Paid)
@@ -54,10 +58,22 @@ public class Ticket
         if (Status == TicketStatus.Canceled)
             throw new InvalidOperationException("No se pueden agregar líneas a un ticket cancelado.");
 
-        var line = TicketLine.Create(Id, productId, productName, quantity, unitPrice, station, notes);
+        var line = TicketLine.Create(Id, productCen, productName, quantity, unitPrice, station, notes);
         _lines.Add(line);
         RecalculateTotals();
     }
+
+    public void AssignWaiter(string waiterCen)
+    {
+        if (Status != TicketStatus.Open)
+            throw new InvalidOperationException("Solo se puede asignar mesero a tickets abiertos.");
+
+        if (string.IsNullOrWhiteSpace(waiterCen))
+            throw new ArgumentException("El mesero es obligatorio.", nameof(waiterCen));
+
+        WaiterCen = waiterCen;
+    }
+
     
     public void DispatchPendingLinesToKitchen(int commandNumber)
     {
@@ -75,7 +91,7 @@ public class Ticket
         if (Status != TicketStatus.Open)
             throw new InvalidOperationException("El ticket no está abierto para recibir pagos.");
             
-        if (WaiterId == Guid.Empty)
+        if (string.IsNullOrWhiteSpace(WaiterCen))
             throw new InvalidOperationException("El ticket debe tener un mesero asignado antes de cobrar.");
 
         // Regla de Cobro Total y Métodos: Pago único por la totalidad
@@ -86,9 +102,6 @@ public class Ticket
         _payments.Add(payment);
         
         Status = TicketStatus.Paid;
-        
-        // Aquí lanzaríamos el Dominio Event para que el módulo Inventory descuente el stock
-        // AddDomainEvent(new TicketPaidDomainEvent(this));
     }
 
     public void Cancel()
