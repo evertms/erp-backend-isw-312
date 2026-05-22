@@ -2,8 +2,9 @@ namespace Core.Domain.Entities;
 
 public class Customer
 {
-    public Guid Id { get; private set; }
-    public Guid CompanyId { get; private set; }
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
+    public int CompanyId { get; private set; }
     public string Name { get; private set; } = null!;
     // Regla de Cliente Opcional: El teléfono es opcional
     public string? Phone { get; private set; }
@@ -14,9 +15,9 @@ public class Customer
 
     protected Customer() { }
 
-    private Customer(Guid id, Guid companyId, string name, string? phone, bool isActive, DateTime createdAt)
+    private Customer(string cen, int companyId, string name, string? phone, bool isActive, DateTime createdAt)
     {
-        Id = id;
+        Cen = cen;
         CompanyId = companyId;
         Name = name;
         Phone = phone;
@@ -24,8 +25,9 @@ public class Customer
         CreatedAt = createdAt;
     }
 
-    public static Customer Create(Guid companyId, string name, string? phone)
+    public static Customer Create(int companyId, string name, string? phone)
     {
-        return new Customer(Guid.NewGuid(), companyId, name, phone, true, DateTime.UtcNow);
+        var cen = $"CUS-{Guid.CreateVersion7()}";
+        return new Customer(cen, companyId, name, phone, true, DateTime.UtcNow);
     }
 }

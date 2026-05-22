@@ -2,7 +2,8 @@ namespace Core.Domain.Entities;
 
 public class Company
 {
-    public Guid Id { get; private set; }
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
     public string Name { get; private set; } = null!;
     public bool IsActive { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -12,9 +13,9 @@ public class Company
 
     protected Company() { }
 
-    private Company(Guid id, string name, bool isActive, DateTime createdAt)
+    private Company(string cen, string name, bool isActive, DateTime createdAt)
     {
-        Id = id;
+        Cen = cen;
         Name = name;
         IsActive = isActive;
         CreatedAt = createdAt;
@@ -25,14 +26,18 @@ public class Company
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("El nombre de la empresa no puede estar vacío.", nameof(name));
 
-        return new Company(Guid.NewGuid(), name, true, DateTime.UtcNow);
+        var cen = $"COM-{Guid.CreateVersion7()}";
+        return new Company(cen, name, true, DateTime.UtcNow);
     }
 
-    public static Company CreateWithId(Guid id, string name)
+    public static Company CreateWithCen(string cen, string name)
     {
+        if (string.IsNullOrWhiteSpace(cen))
+            throw new ArgumentException("El CEN no puede estar vacío.", nameof(cen));
+
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("El nombre de la empresa no puede estar vacío.", nameof(name));
 
-        return new Company(id, name, true, DateTime.UtcNow);
+        return new Company(cen, name, true, DateTime.UtcNow);
     }
 }
