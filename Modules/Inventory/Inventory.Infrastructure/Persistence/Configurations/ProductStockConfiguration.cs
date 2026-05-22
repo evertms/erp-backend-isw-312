@@ -10,6 +10,9 @@ public class ProductStockConfiguration : IEntityTypeConfiguration<ProductStock>
     {
         builder.ToTable("product_stocks");
         builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Cen).IsRequired().HasMaxLength(50);
+        builder.HasIndex(x => x.Cen).IsUnique();
         
         builder.Property(x => x.CurrentQuantity).HasPrecision(18, 4);
 

@@ -57,6 +57,7 @@ pnpm-debug.log*
 .env
 .env.*
 !.env.example
+appsettings.Development.json
 
 # Editor directories
 .vscode/

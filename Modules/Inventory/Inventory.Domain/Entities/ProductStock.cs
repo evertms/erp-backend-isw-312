@@ -2,10 +2,11 @@ namespace Inventory.Domain.Entities;
 
 public class ProductStock
 {
-    public Guid Id { get; private set; }
-    public Guid CompanyId { get; private set; } // Logical ref to Core
-    public Guid ProductId { get; private set; }
-    public Guid WarehouseId { get; private set; }
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
+    public string CompanyCen { get; private set; } = null!; // Logical ref to Core
+    public int ProductId { get; private set; }
+    public int WarehouseId { get; private set; }
     
     public decimal CurrentQuantity { get; private set; }
     public DateTime LastUpdated { get; private set; }
@@ -15,19 +16,20 @@ public class ProductStock
 
     protected ProductStock() { }
 
-    private ProductStock(Guid id, Guid companyId, Guid productId, Guid warehouseId, decimal currentQuantity, DateTime lastUpdated)
+    private ProductStock(string cen, string companyCen, int productId, int warehouseId, decimal currentQuantity, DateTime lastUpdated)
     {
-        Id = id;
-        CompanyId = companyId;
+        Cen = cen;
+        CompanyCen = companyCen;
         ProductId = productId;
         WarehouseId = warehouseId;
         CurrentQuantity = currentQuantity;
         LastUpdated = lastUpdated;
     }
 
-    public static ProductStock Create(Guid companyId, Guid productId, Guid warehouseId)
+    public static ProductStock Create(string companyCen, int productId, int warehouseId)
     {
-        return new ProductStock(Guid.NewGuid(), companyId, productId, warehouseId, 0, DateTime.UtcNow);
+        var cen = $"STK-{Guid.CreateVersion7()}";
+        return new ProductStock(cen, companyCen, productId, warehouseId, 0, DateTime.UtcNow);
     }
 
     public void AddQuantity(decimal quantity)

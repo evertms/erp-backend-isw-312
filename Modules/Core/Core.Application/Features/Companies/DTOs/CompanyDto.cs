@@ -1,3 +1,3 @@
 namespace Core.Application.Features.Companies.DTOs;
 
-public record CompanyDto(Guid Id, string Name);
+public record CompanyDto(int Id, string Cen, string Name);
