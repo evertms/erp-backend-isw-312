@@ -11,13 +11,12 @@ public class UpdateProductStatusHandler(
     {
         var product = await productRepository.GetByCenAsync(request.ProductCen, cancellationToken);
 
-        if (product == null || product.CompanyId != request.CompanyId)
+        if (product == null || product.CompanyCen != request.CompanyCen)
         {
             return false;
         }
 
         product.UpdateStatus(request.Status);
-
         await productRepository.UpdateAsync(product, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

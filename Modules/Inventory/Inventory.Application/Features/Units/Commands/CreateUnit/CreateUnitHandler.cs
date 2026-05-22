@@ -11,19 +11,19 @@ public class CreateUnitHandler(
     public async Task<string> Handle(CreateUnitCommand request, CancellationToken cancellationToken)
     {
         // Validación de duplicidad (Criterio de Aceptación 2)
-        var isNameUnique = await unitRepository.IsNameUniqueAsync(request.CompanyId, request.Name, cancellationToken);
+        var isNameUnique = await unitRepository.IsNameUniqueAsync(request.CompanyCen, request.Name, cancellationToken);
         if (!isNameUnique)
         {
             throw new InvalidOperationException("Ya existe una unidad de medida con ese nombre.");
         }
 
-        var isCodeUnique = await unitRepository.IsCodeUniqueAsync(request.CompanyId, request.Code, cancellationToken);
+        var isCodeUnique = await unitRepository.IsCodeUniqueAsync(request.CompanyCen, request.Code, cancellationToken);
         if (!isCodeUnique)
         {
             throw new InvalidOperationException("Ya existe una unidad de medida con ese código.");
         }
 
-        var unit = Unit.Create(request.CompanyId, request.Name, request.Code);
+        var unit = Unit.Create(request.CompanyCen, request.Name, request.Code);
 
         await unitRepository.AddAsync(unit, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);

@@ -17,7 +17,7 @@ public class ConsumeStockHandler(
     public async Task<StockConsumeContractResponse> Handle(ConsumeStockCommand request, CancellationToken cancellationToken)
     {
         var warehouse = await warehouseRepository.GetByCenAsync(request.Request.WarehouseCen, cancellationToken);
-        if (warehouse == null || warehouse.CompanyId != request.CompanyId)
+        if (warehouse == null || warehouse.CompanyCen != request.CompanyCen)
             throw new ArgumentException("Almacén no válido.");
 
         await unitOfWork.BeginTransactionAsync(cancellationToken);
@@ -25,7 +25,7 @@ public class ConsumeStockHandler(
         try
         {
             var document = InventoryDocument.Create(
-                request.CompanyId,
+                request.CompanyCen,
                 warehouse.Id,
                 DocumentType.Salida,
                 DateTime.UtcNow,
@@ -41,7 +41,7 @@ public class ConsumeStockHandler(
             foreach (var itemRequest in request.Request.Items)
             {
                 var product = await productRepository.GetByCenAsync(itemRequest.ProductCen, cancellationToken);
-                if (product == null || product.CompanyId != request.CompanyId)
+                if (product == null || product.CompanyCen != request.CompanyCen)
                     throw new ArgumentException($"Producto {itemRequest.ProductCen} no válido.");
 
                 var quantity = (decimal)itemRequest.Quantity;
@@ -50,14 +50,14 @@ public class ConsumeStockHandler(
                 var stock = await stockRepository.GetStockByProductAndWarehouseAsync(product.Id, warehouse.Id, cancellationToken);
                 if (stock == null)
                 {
-                    stock = ProductStock.Create(request.CompanyId, product.Id, warehouse.Id);
+                    stock = ProductStock.Create(request.CompanyCen, product.Id, warehouse.Id);
                     stockRepository.Add(stock);
                 }
 
                 stock.SubtractQuantity(quantity);
 
                 var movement = KardexMovement.Create(
-                    request.CompanyId,
+                    request.CompanyCen,
                     product.Id,
                     warehouse.Id,
                     MovementType.Out,

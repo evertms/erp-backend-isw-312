@@ -16,7 +16,7 @@ public class GetInventoryDocumentsHandler(IInventoryDocumentRepository documentR
         }
 
         var documents = await documentRepository.GetDocumentsAsync(
-            request.CompanyId,
+            request.CompanyCen,
             typeEnum,
             request.From,
             request.To,

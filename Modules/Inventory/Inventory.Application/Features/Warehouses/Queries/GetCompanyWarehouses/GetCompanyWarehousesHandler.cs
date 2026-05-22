@@ -8,7 +8,7 @@ public class GetCompanyWarehousesHandler(IWarehouseRepository warehouseRepositor
 {
     public async Task<List<WarehouseContractDto>> Handle(GetCompanyWarehousesQuery request, CancellationToken cancellationToken)
     {
-        var warehouses = await warehouseRepository.GetActiveWarehousesByCompanyIdAsync(request.CompanyId, cancellationToken);
-        return warehouses.Select(w => new WarehouseContractDto(w.Id.ToString(), w.Name, true)).ToList();
+        var warehouses = await warehouseRepository.GetActiveWarehousesByCompanyIdAsync(request.CompanyCen, cancellationToken);
+        return warehouses.Select(w => new WarehouseContractDto(w.Cen, w.Name, true)).ToList();
     }
 }

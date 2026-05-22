@@ -21,11 +21,8 @@ public static class ProductEndpoints
         {
             try
             {
-                if (!Guid.TryParse(companyCen, out var companyId))
-                    return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
                 var command = new CreateProductCommand(
-                    companyId, 
+                    companyCen, 
                     request.Name, 
                     request.CategoryCen, 
                     request.UnitCen, 
@@ -48,12 +45,9 @@ public static class ProductEndpoints
         {
             try
             {
-                if (!Guid.TryParse(companyCen, out var companyId))
-                    return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
                 var command = new UpdateProductCommand(
                     productCen,
-                    companyId,
+                    companyCen,
                     request.Name,
                     request.CategoryCen,
                     request.UnitCen,
@@ -75,13 +69,10 @@ public static class ProductEndpoints
 
         group.MapPatch("/{productCen}/status", async (string companyCen, string productCen, UpdateProductStatusContractRequest request, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
             if (!Enum.TryParse<ProductStatus>(request.Status, true, out var status))
                 return Results.BadRequest(new { Error = "Estado no válido." });
 
-            var command = new UpdateProductStatusCommand(productCen, companyId, status);
+            var command = new UpdateProductStatusCommand(productCen, companyCen, status);
             var result = await mediator.Send(command);
             
             return result ? Results.Ok() : Results.NotFound();
@@ -89,28 +80,19 @@ public static class ProductEndpoints
 
         group.MapGet("/", async (string companyCen, [FromQuery] string? search, [FromQuery] string? categoryCen, [FromQuery] string? status, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var products = await mediator.Send(new GetCompanyProductsQuery(companyId, search, categoryCen, status));
+            var products = await mediator.Send(new GetCompanyProductsQuery(companyCen, search, categoryCen, status));
             return Results.Ok(products);
         });
 
         group.MapPost("/lookup", async (string companyCen, ProductLookupContractRequest request, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var result = await mediator.Send(new ProductLookupQuery(companyId, request));
+            var result = await mediator.Send(new ProductLookupQuery(companyCen, request));
             return Results.Ok(result);
         });
 
         app.MapGet("/api/inventory/companies/{companyCen}/sellable-products", async (string companyCen, [FromQuery] string? search, [FromQuery] string? categoryCen, [FromQuery] string? warehouseCen, [FromQuery] bool? onlyAvailable, [FromQuery] int? page, [FromQuery] int? pageSize, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var result = await mediator.Send(new GetSellableProductsQuery(companyId, search, categoryCen, warehouseCen, onlyAvailable ?? true, page ?? 1, pageSize ?? 50));
+            var result = await mediator.Send(new GetSellableProductsQuery(companyCen, search, categoryCen, warehouseCen, onlyAvailable ?? true, page ?? 1, pageSize ?? 50));
             return Results.Ok(result);
         }).WithTags("Inventory Sellable Products Contract");
     }

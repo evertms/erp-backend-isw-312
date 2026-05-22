@@ -4,6 +4,6 @@ using Shared.Contracts.Inventory;
 namespace Inventory.Application.Features.Documents.Commands.CreateInventoryDocument;
 
 public record CreateInventoryDocumentCommand(
-    Guid CompanyId,
+    string CompanyCen,
     InventoryDocumentContractRequest Request
 ) : IRequest<InventoryDocumentContractDto>;

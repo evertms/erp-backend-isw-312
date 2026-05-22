@@ -8,7 +8,7 @@ public class GetUnitsHandler(IUnitRepository unitRepository) : IRequestHandler<G
 {
     public async Task<List<UnitContractDto>> Handle(GetUnitsQuery request, CancellationToken cancellationToken)
     {
-        var units = await unitRepository.GetAllAsync(request.CompanyId, cancellationToken);
+        var units = await unitRepository.GetAllAsync(request.CompanyCen, cancellationToken);
 
         return units
             .Select(u => new UnitContractDto(u.Cen, u.Name, u.Code, true))

@@ -14,21 +14,21 @@ public class CreateProductHandler(
     {
         // Validación de existencia de Categoría
         var category = await categoryRepository.GetByCenAsync(request.CategoryCen, cancellationToken);
-        if (category == null || category.CompanyId != request.CompanyId)
+        if (category == null || category.CompanyCen != request.CompanyCen)
         {
             throw new ArgumentException("La categoría especificada no existe o no pertenece a la empresa.");
         }
 
         // Validación de existencia de Unidad de medida
         var unit = await unitRepository.GetByCenAsync(request.UnitCen, cancellationToken);
-        if (unit == null || unit.CompanyId != request.CompanyId)
+        if (unit == null || unit.CompanyCen != request.CompanyCen)
         {
             throw new ArgumentException("La unidad de medida especificada no existe o no pertenece a la empresa.");
         }
 
         // El dominio se encarga de validar: nombre, price > 0, etc.
         var product = Product.Create(
-            request.CompanyId,
+            request.CompanyCen,
             category.Id,
             unit.Id,
             request.Name,

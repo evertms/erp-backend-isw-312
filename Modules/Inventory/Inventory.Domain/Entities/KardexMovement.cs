@@ -6,7 +6,7 @@ public class KardexMovement
 {
     public int Id { get; private set; }
     public string Cen { get; private set; } = null!;
-    public Guid CompanyId { get; private set; } // Logical ref to Core
+    public string CompanyCen { get; private set; } = null!; // Logical ref to Core
     public int ProductId { get; private set; }
     public int WarehouseId { get; private set; }
     public int? DocumentId { get; private set; }
@@ -23,10 +23,10 @@ public class KardexMovement
 
     protected KardexMovement() { }
 
-    private KardexMovement(string cen, Guid companyId, int productId, int warehouseId, int? documentId, MovementType movementType, decimal quantity, decimal balance, string? reason, DateTime movementDate)
+    private KardexMovement(string cen, string companyCen, int productId, int warehouseId, int? documentId, MovementType movementType, decimal quantity, decimal balance, string? reason, DateTime movementDate)
     {
         Cen = cen;
-        CompanyId = companyId;
+        CompanyCen = companyCen;
         ProductId = productId;
         WarehouseId = warehouseId;
         DocumentId = documentId;
@@ -37,7 +37,7 @@ public class KardexMovement
         MovementDate = movementDate;
     }
 
-    public static KardexMovement Create(Guid companyId, int productId, int warehouseId, MovementType type, decimal quantity, decimal currentBalance, int? documentId = null, string? reason = null)
+    public static KardexMovement Create(string companyCen, int productId, int warehouseId, MovementType type, decimal quantity, decimal currentBalance, int? documentId = null, string? reason = null)
     {
         if (quantity <= 0)
             throw new ArgumentException("La cantidad debe ser mayor a 0.", nameof(quantity));
@@ -50,6 +50,6 @@ public class KardexMovement
             throw new InvalidOperationException($"El movimiento de salida dejaría el saldo negativo. Saldo actual: {currentBalance}, Cantidad: {quantity}");
 
         var cen = $"MOV-{Guid.CreateVersion7()}";
-        return new KardexMovement(cen, companyId, productId, warehouseId, documentId, type, quantity, newBalance, reason, DateTime.UtcNow);
+        return new KardexMovement(cen, companyCen, productId, warehouseId, documentId, type, quantity, newBalance, reason, DateTime.UtcNow);
     }
 }

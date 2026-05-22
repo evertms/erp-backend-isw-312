@@ -29,7 +29,7 @@ public class GetSellableProductsHandler(
 
         // Get active products
         var products = await productRepository.SearchAsync(
-            request.CompanyId,
+            request.CompanyCen,
             request.Search,
             categoryId,
             ProductStatus.Activo,

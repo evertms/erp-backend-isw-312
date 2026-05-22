@@ -6,10 +6,10 @@ namespace Inventory.Infrastructure.Persistence.Repositories;
 
 public class CategoryRepository(InventoryDbContext context) : ICategoryRepository
 {
-    public Task<List<Category>> GetAllCategoriesAsync(Guid companyId, CancellationToken cancellationToken)
+    public Task<List<Category>> GetAllCategoriesAsync(string companyCen, CancellationToken cancellationToken)
     {
         return context.Categories
-            .Where(c => c.CompanyId == companyId)
+            .Where(c => c.CompanyCen == companyCen)
             .ToListAsync(cancellationToken);
     }
 

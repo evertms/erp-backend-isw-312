@@ -8,7 +8,7 @@ public class ProductLookupHandler(IProductRepository productRepository) : IReque
 {
     public async Task<List<ProductContractDto>> Handle(ProductLookupQuery request, CancellationToken cancellationToken)
     {
-        var products = await productRepository.GetByCensAsync(request.CompanyId, request.Request.ProductCens, cancellationToken);
+        var products = await productRepository.GetByCensAsync(request.CompanyCen, request.Request.ProductCens, cancellationToken);
 
         return products.Select(p => new ProductContractDto(
             p.Cen,

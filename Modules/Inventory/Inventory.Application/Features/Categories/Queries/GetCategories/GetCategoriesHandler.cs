@@ -8,7 +8,7 @@ public class GetCategoriesHandler(ICategoryRepository categoryRepository) : IReq
 {
     public async Task<List<CategoryContractDto>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
     {
-        var categories = await categoryRepository.GetAllCategoriesAsync(request.CompanyId, cancellationToken);
+        var categories = await categoryRepository.GetAllCategoriesAsync(request.CompanyCen, cancellationToken);
 
         return categories
             .Select(c => new CategoryContractDto(c.Cen, c.Name, c.Description, true))

@@ -27,7 +27,7 @@ public class GetCompanyStockHandler(
             if (warehouseId == null) return new List<StockItemContractDto>();
         }
 
-        var stocks = await stockRepository.GetStockAsync(request.CompanyId, productId, warehouseId, cancellationToken);
+        var stocks = await stockRepository.GetStockAsync(request.CompanyCen, productId, warehouseId, cancellationToken);
 
         return stocks.Select(s => new StockItemContractDto(
             s.Product.Cen,

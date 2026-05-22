@@ -13,6 +13,6 @@ public static class MigrationExtensions
 
         await coreDbContext.Database.MigrateAsync();
 
-        var companyId = await CoreSeeder.SeedAsync(coreDbContext);        
+        await CoreSeeder.SeedAsync(coreDbContext);        
     }
 }

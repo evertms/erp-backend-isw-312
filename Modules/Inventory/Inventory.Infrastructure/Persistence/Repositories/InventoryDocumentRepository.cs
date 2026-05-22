@@ -13,7 +13,7 @@ public class InventoryDocumentRepository(InventoryDbContext dbContext) : IInvent
     }
 
     public async Task<List<InventoryDocument>> GetDocumentsAsync(
-        Guid companyId, 
+        string companyCen, 
         DocumentType? type = null, 
         DateTime? from = null, 
         DateTime? to = null, 
@@ -21,7 +21,7 @@ public class InventoryDocumentRepository(InventoryDbContext dbContext) : IInvent
     {
         var query = dbContext.InventoryDocuments
             .Include(d => d.Lines)
-            .Where(d => d.CompanyId == companyId);
+            .Where(d => d.CompanyCen == companyCen);
 
         if (type.HasValue)
             query = query.Where(d => d.Type == type.Value);

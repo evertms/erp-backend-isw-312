@@ -6,7 +6,7 @@ public class InventoryDocument
 {
     public int Id { get; private set; }
     public string Cen { get; private set; } = null!;
-    public Guid CompanyId { get; private set; } // Logical ref to Core
+    public string CompanyCen { get; private set; } = null!; // Logical ref to Core
     public int WarehouseId { get; private set; }
     
     public DocumentType Type { get; private set; }
@@ -21,10 +21,10 @@ public class InventoryDocument
 
     protected InventoryDocument() { }
 
-    private InventoryDocument(string cen, Guid companyId, int warehouseId, DocumentType type, DocumentStatus status, DateTime documentDate, string? notes, DateTime createdAt)
+    private InventoryDocument(string cen, string companyCen, int warehouseId, DocumentType type, DocumentStatus status, DateTime documentDate, string? notes, DateTime createdAt)
     {
         Cen = cen;
-        CompanyId = companyId;
+        CompanyCen = companyCen;
         WarehouseId = warehouseId;
         Type = type;
         Status = status;
@@ -33,7 +33,7 @@ public class InventoryDocument
         CreatedAt = createdAt;
     }
 
-    public static InventoryDocument Create(Guid companyId, int warehouseId, DocumentType type, DateTime documentDate, string? notes = null)
+    public static InventoryDocument Create(string companyCen, int warehouseId, DocumentType type, DateTime documentDate, string? notes = null)
     {
         // Regla de Auditoría de Ajustes: Obligatorio motivo si es ajuste (u otra operación directa)
         if (type == DocumentType.Ajuste && string.IsNullOrWhiteSpace(notes))
@@ -42,7 +42,7 @@ public class InventoryDocument
         }
 
         var cen = $"DOC-{Guid.CreateVersion7()}";
-        return new InventoryDocument(cen, companyId, warehouseId, type, DocumentStatus.Borrador, documentDate, notes, DateTime.UtcNow);
+        return new InventoryDocument(cen, companyCen, warehouseId, type, DocumentStatus.Borrador, documentDate, notes, DateTime.UtcNow);
     }
 
     public void AddLine(int productId, decimal quantity)

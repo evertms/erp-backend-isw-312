@@ -12,10 +12,7 @@ public static class WarehouseEndpoints
 
         group.MapGet("/", async (string companyCen, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var warehouses = await mediator.Send(new GetCompanyWarehousesQuery(companyId));
+            var warehouses = await mediator.Send(new GetCompanyWarehousesQuery(companyCen));
             return Results.Ok(warehouses);
         });
     }

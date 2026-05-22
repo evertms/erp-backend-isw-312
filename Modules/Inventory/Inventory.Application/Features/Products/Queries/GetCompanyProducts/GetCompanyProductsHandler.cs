@@ -28,7 +28,7 @@ public class GetCompanyProductsHandler(
         }
 
         var products = await productRepository.SearchAsync(
-            request.CompanyId, 
+            request.CompanyCen, 
             request.Search, 
             categoryId, 
             statusEnum, 

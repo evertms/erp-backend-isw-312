@@ -7,20 +7,20 @@ namespace Inventory.Infrastructure.Persistence.Repositories;
 
 public class ProductRepository(InventoryDbContext dbContext) : IProductRepository
 {
-    public async Task<List<Product>> GetActiveProductsByCompanyIdAsync(Guid companyId, CancellationToken cancellationToken = default)
+    public async Task<List<Product>> GetActiveProductsByCompanyIdAsync(string companyCen, CancellationToken cancellationToken = default)
     {
         return await dbContext.Products
-            .Where(p => p.CompanyId == companyId && p.Status == ProductStatus.Activo)
+            .Where(p => p.CompanyCen == companyCen && p.Status == ProductStatus.Activo)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Product>> GetActiveProductsWithStockByCompanyIdAsync(Guid companyId, CancellationToken cancellationToken = default)
+    public async Task<List<Product>> GetActiveProductsWithStockByCompanyIdAsync(string companyCen, CancellationToken cancellationToken = default)
     {
-        return await GetActiveProductsByCompanyIdAsync(companyId, cancellationToken);
+        return await GetActiveProductsByCompanyIdAsync(companyCen, cancellationToken);
     }
 
     public async Task<List<Product>> SearchAsync(
-        Guid companyId, 
+        string companyCen, 
         string? searchTerm = null, 
         int? categoryId = null, 
         ProductStatus? status = null, 
@@ -29,7 +29,7 @@ public class ProductRepository(InventoryDbContext dbContext) : IProductRepositor
         var query = dbContext.Products
             .Include(p => p.Category)
             .Include(p => p.Unit)
-            .Where(p => p.CompanyId == companyId);
+            .Where(p => p.CompanyCen == companyCen);
 
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
@@ -66,12 +66,12 @@ public class ProductRepository(InventoryDbContext dbContext) : IProductRepositor
             .FirstOrDefaultAsync(p => p.Cen == cen, cancellationToken);
     }
 
-    public Task<List<Product>> GetByCensAsync(Guid companyId, List<string> cens, CancellationToken cancellationToken)
+    public Task<List<Product>> GetByCensAsync(string companyCen, List<string> cens, CancellationToken cancellationToken)
     {
         return dbContext.Products
             .Include(p => p.Category)
             .Include(p => p.Unit)
-            .Where(p => p.CompanyId == companyId && cens.Contains(p.Cen))
+            .Where(p => p.CompanyCen == companyCen && cens.Contains(p.Cen))
             .ToListAsync(cancellationToken);
     }
 

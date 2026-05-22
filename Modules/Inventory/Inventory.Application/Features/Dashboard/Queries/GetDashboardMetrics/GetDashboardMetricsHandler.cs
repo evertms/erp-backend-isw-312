@@ -8,7 +8,7 @@ public class GetDashboardMetricsHandler(IProductStockRepository stockRepository)
 {
     public async Task<InventoryDashboardContractDto> Handle(GetDashboardMetricsQuery request, CancellationToken cancellationToken)
     {
-        var activeStocks = await stockRepository.GetAllActiveProductsStock(request.CompanyId, cancellationToken);
+        var activeStocks = await stockRepository.GetAllActiveProductsStock(request.CompanyCen, cancellationToken);
 
         var productGroupedMetrics = activeStocks
             .GroupBy(ps => ps.Product)
@@ -25,7 +25,7 @@ public class GetDashboardMetricsHandler(IProductStockRepository stockRepository)
         var lowStockAlertsCount = productGroupedMetrics.Count(p => p.IsLowStock);
 
         return new InventoryDashboardContractDto(
-            request.CompanyId.ToString(),
+            request.CompanyCen,
             totalProductsCount,
             (double)totalStockDecimal,
             lowStockAlertsCount,

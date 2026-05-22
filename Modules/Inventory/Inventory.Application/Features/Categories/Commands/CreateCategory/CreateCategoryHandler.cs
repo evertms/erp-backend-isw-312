@@ -10,7 +10,7 @@ public class CreateCategoryHandler(
 {
     public async Task<string> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var category = Category.Create(request.CompanyId, request.Name, request.Description);
+        var category = Category.Create(request.CompanyCen, request.Name, request.Description);
 
         await categoryRepository.AddAsync(category, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);

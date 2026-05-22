@@ -13,21 +13,21 @@ public class UpdateProductHandler(
     {
         var product = await productRepository.GetByCenAsync(request.ProductCen, cancellationToken);
         
-        if (product == null || product.CompanyId != request.CompanyId)
+        if (product == null || product.CompanyCen != request.CompanyCen)
         {
             return false;
         }
 
         // Validate Category if changed
         var category = await categoryRepository.GetByCenAsync(request.CategoryCen, cancellationToken);
-        if (category == null || category.CompanyId != request.CompanyId)
+        if (category == null || category.CompanyCen != request.CompanyCen)
         {
             throw new ArgumentException("La categoría especificada no existe o no pertenece a la empresa.");
         }
 
         // Validate Unit if changed
         var unit = await unitRepository.GetByCenAsync(request.UnitCen, cancellationToken);
-        if (unit == null || unit.CompanyId != request.CompanyId)
+        if (unit == null || unit.CompanyCen != request.CompanyCen)
         {
             throw new ArgumentException("La unidad de medida especificada no existe o no pertenece a la empresa.");
         }

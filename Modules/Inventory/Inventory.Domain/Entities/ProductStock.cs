@@ -4,7 +4,7 @@ public class ProductStock
 {
     public int Id { get; private set; }
     public string Cen { get; private set; } = null!;
-    public Guid CompanyId { get; private set; } // Logical ref to Core
+    public string CompanyCen { get; private set; } = null!; // Logical ref to Core
     public int ProductId { get; private set; }
     public int WarehouseId { get; private set; }
     
@@ -16,20 +16,20 @@ public class ProductStock
 
     protected ProductStock() { }
 
-    private ProductStock(string cen, Guid companyId, int productId, int warehouseId, decimal currentQuantity, DateTime lastUpdated)
+    private ProductStock(string cen, string companyCen, int productId, int warehouseId, decimal currentQuantity, DateTime lastUpdated)
     {
         Cen = cen;
-        CompanyId = companyId;
+        CompanyCen = companyCen;
         ProductId = productId;
         WarehouseId = warehouseId;
         CurrentQuantity = currentQuantity;
         LastUpdated = lastUpdated;
     }
 
-    public static ProductStock Create(Guid companyId, int productId, int warehouseId)
+    public static ProductStock Create(string companyCen, int productId, int warehouseId)
     {
         var cen = $"STK-{Guid.CreateVersion7()}";
-        return new ProductStock(cen, companyId, productId, warehouseId, 0, DateTime.UtcNow);
+        return new ProductStock(cen, companyCen, productId, warehouseId, 0, DateTime.UtcNow);
     }
 
     public void AddQuantity(decimal quantity)

@@ -4,7 +4,7 @@ using Shared.Contracts.Inventory;
 namespace Inventory.Application.Features.Products.Queries.GetSellableProducts;
 
 public record GetSellableProductsQuery(
-    Guid CompanyId,
+    string CompanyCen,
     string? Search = null,
     string? CategoryCen = null,
     string? WarehouseCen = null,

@@ -19,64 +19,43 @@ public static class InventoryEndpoints
 
         contractGroup.MapGet("/stock", async (string companyCen, [FromQuery] string? productCen, [FromQuery] string? warehouseCen, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var result = await mediator.Send(new GetCompanyStockQuery(companyId, productCen, warehouseCen));
+            var result = await mediator.Send(new GetCompanyStockQuery(companyCen, productCen, warehouseCen));
             return Results.Ok(result);
         });
 
         contractGroup.MapGet("/products/{productCen}/kardex", async (string companyCen, string productCen, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
             var result = await mediator.Send(new GetProductKardexQuery(productCen));
             return Results.Ok(result);
         });
 
         contractGroup.MapPost("/documents", async (string companyCen, InventoryDocumentContractRequest request, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var result = await mediator.Send(new CreateInventoryDocumentCommand(companyId, request));
+            var result = await mediator.Send(new CreateInventoryDocumentCommand(companyCen, request));
             return Results.Created($"/api/inventory/companies/{companyCen}/documents/{result.DocumentCen}", result);
         });
 
         contractGroup.MapPost("/stock/adjustments", async (string companyCen, InventoryAdjustmentContractRequest request, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var result = await mediator.Send(new CreateInventoryAdjustmentCommand(companyId, request));
+            var result = await mediator.Send(new CreateInventoryAdjustmentCommand(companyCen, request));
             return Results.Created($"/api/inventory/companies/{companyCen}/stock/adjustments/{result.AdjustmentCen}", result);
         });
 
         contractGroup.MapPost("/stock/validate", async (string companyCen, StockValidationContractRequest request, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var result = await mediator.Send(new ValidateStockCommand(companyId, request));
+            var result = await mediator.Send(new ValidateStockCommand(companyCen, request));
             return Results.Ok(result);
         });
 
         contractGroup.MapGet("/documents", async (string companyCen, [FromQuery] string? documentType, [FromQuery] DateTime? from, [FromQuery] DateTime? to, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var result = await mediator.Send(new GetInventoryDocumentsQuery(companyId, documentType, from, to));
+            var result = await mediator.Send(new GetInventoryDocumentsQuery(companyCen, documentType, from, to));
             return Results.Ok(result);
         });
 
         contractGroup.MapPost("/stock/consume", async (string companyCen, StockConsumeContractRequest request, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var result = await mediator.Send(new ConsumeStockCommand(companyId, request));
+            var result = await mediator.Send(new ConsumeStockCommand(companyCen, request));
             return Results.Ok(result);
         });
     }

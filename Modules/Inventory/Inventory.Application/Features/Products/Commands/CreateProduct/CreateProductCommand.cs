@@ -3,7 +3,7 @@ using MediatR;
 namespace Inventory.Application.Features.Products.Commands.CreateProduct;
 
 public record CreateProductCommand(
-    Guid CompanyId,
+    string CompanyCen,
     string Name,
     string CategoryCen,
     string UnitCen,

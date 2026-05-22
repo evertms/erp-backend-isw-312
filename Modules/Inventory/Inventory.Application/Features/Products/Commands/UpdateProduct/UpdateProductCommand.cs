@@ -4,7 +4,7 @@ namespace Inventory.Application.Features.Products.Commands.UpdateProduct;
 
 public record UpdateProductCommand(
     string ProductCen,
-    Guid CompanyId,
+    string CompanyCen,
     string Name,
     string CategoryCen,
     string UnitCen,

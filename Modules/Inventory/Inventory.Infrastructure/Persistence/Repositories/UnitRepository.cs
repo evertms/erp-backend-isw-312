@@ -6,10 +6,10 @@ namespace Inventory.Infrastructure.Persistence.Repositories;
 
 public class UnitRepository(InventoryDbContext context) : IUnitRepository
 {
-    public Task<List<Unit>> GetAllAsync(Guid companyId, CancellationToken cancellationToken)
+    public Task<List<Unit>> GetAllAsync(string companyCen, CancellationToken cancellationToken)
     {
         return context.Units
-            .Where(u => u.CompanyId == companyId)
+            .Where(u => u.CompanyCen == companyCen)
             .ToListAsync(cancellationToken);
     }
 
@@ -23,14 +23,14 @@ public class UnitRepository(InventoryDbContext context) : IUnitRepository
         return context.Units.FirstOrDefaultAsync(u => u.Cen == cen, cancellationToken);
     }
 
-    public async Task<bool> IsNameUniqueAsync(Guid companyId, string name, CancellationToken cancellationToken)
+    public async Task<bool> IsNameUniqueAsync(string companyCen, string name, CancellationToken cancellationToken)
     {
-        return !await context.Units.AnyAsync(u => u.CompanyId == companyId && u.Name == name, cancellationToken);
+        return !await context.Units.AnyAsync(u => u.CompanyCen == companyCen && u.Name == name, cancellationToken);
     }
 
-    public async Task<bool> IsCodeUniqueAsync(Guid companyId, string code, CancellationToken cancellationToken)
+    public async Task<bool> IsCodeUniqueAsync(string companyCen, string code, CancellationToken cancellationToken)
     {
-        return !await context.Units.AnyAsync(u => u.CompanyId == companyId && u.Code == code, cancellationToken);
+        return !await context.Units.AnyAsync(u => u.CompanyCen == companyCen && u.Code == code, cancellationToken);
     }
 
     public async Task AddAsync(Unit unit, CancellationToken cancellationToken)

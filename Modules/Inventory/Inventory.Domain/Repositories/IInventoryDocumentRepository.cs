@@ -7,7 +7,7 @@ public interface IInventoryDocumentRepository
 {
     void Add(InventoryDocument document);
     Task<List<InventoryDocument>> GetDocumentsAsync(
-        Guid companyId, 
+        string companyCen, 
         DocumentType? type = null, 
         DateTime? from = null, 
         DateTime? to = null, 

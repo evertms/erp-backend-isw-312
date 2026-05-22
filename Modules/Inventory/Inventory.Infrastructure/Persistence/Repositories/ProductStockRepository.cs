@@ -20,13 +20,13 @@ public class ProductStockRepository(InventoryDbContext dbContext) : IProductStoc
             .FirstOrDefaultAsync(s => s.ProductId == productId && s.WarehouseId == warehouseId, cancellationToken);
     }
 
-    public async Task<List<ProductStock>> GetStockAsync(Guid companyId, int? productId = null, int? warehouseId = null, CancellationToken cancellationToken = default)
+    public async Task<List<ProductStock>> GetStockAsync(string companyCen, int? productId = null, int? warehouseId = null, CancellationToken cancellationToken = default)
     {
         var query = dbContext.ProductStocks
             .Include(ps => ps.Product)
                 .ThenInclude(p => p.Unit)
             .Include(ps => ps.Warehouse)
-            .Where(ps => ps.Product.CompanyId == companyId);
+            .Where(ps => ps.CompanyCen == companyCen);
 
         if (productId.HasValue)
         {
@@ -41,11 +41,11 @@ public class ProductStockRepository(InventoryDbContext dbContext) : IProductStoc
         return await query.ToListAsync(cancellationToken);
     }
 
-    public async Task<List<ProductStock>> GetAllActiveProductsStock(Guid companyId, CancellationToken cancellationToken = default)
+    public async Task<List<ProductStock>> GetAllActiveProductsStock(string companyCen, CancellationToken cancellationToken = default)
     {
         return await dbContext.ProductStocks
             .Include(ps => ps.Product)
-            .Where(ps => ps.Product.CompanyId == companyId && ps.Product.Status == ProductStatus.Activo)
+            .Where(ps => ps.CompanyCen == companyCen && ps.Product.Status == ProductStatus.Activo)
             .ToListAsync(cancellationToken);
     }
 

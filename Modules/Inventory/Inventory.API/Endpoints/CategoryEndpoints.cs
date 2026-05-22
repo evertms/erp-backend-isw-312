@@ -16,10 +16,7 @@ public static class CategoryEndpoints
         {
             try
             {
-                if (!Guid.TryParse(companyCen, out var companyId))
-                    return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-                var command = new CreateCategoryCommand(companyId, request.Name, request.Description);
+                var command = new CreateCategoryCommand(companyCen, request.Name, request.Description);
                 var cen = await mediator.Send(command);
                 
                 return Results.Created($"/api/inventory/companies/{companyCen}/categories/{cen}", new CategoryContractDto(cen, request.Name, request.Description, true));
@@ -34,10 +31,7 @@ public static class CategoryEndpoints
         {
             try
             {
-                if (!Guid.TryParse(companyCen, out var companyId))
-                    return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-                var command = new UpdateCategoryCommand(categoryCen, companyId, request.Name, request.Description);
+                var command = new UpdateCategoryCommand(categoryCen, companyCen, request.Name, request.Description);
                 var result = await mediator.Send(command);
                 
                 return result 
@@ -52,10 +46,7 @@ public static class CategoryEndpoints
 
         group.MapGet("/", async (string companyCen, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var result = await mediator.Send(new GetCategoriesQuery(companyId));
+            var result = await mediator.Send(new GetCategoriesQuery(companyCen));
             return Results.Ok(result);
         });
     }

@@ -17,7 +17,7 @@ public class CreateInventoryDocumentHandler(
     public async Task<InventoryDocumentContractDto> Handle(CreateInventoryDocumentCommand request, CancellationToken cancellationToken)
     {
         var warehouse = await warehouseRepository.GetByCenAsync(request.Request.WarehouseCen, cancellationToken);
-        if (warehouse == null || warehouse.CompanyId != request.CompanyId)
+        if (warehouse == null || warehouse.CompanyCen != request.CompanyCen)
             throw new ArgumentException("Almacén no válido.");
 
         if (!Enum.TryParse<DocumentType>(request.Request.DocumentType, true, out var docType))
@@ -28,7 +28,7 @@ public class CreateInventoryDocumentHandler(
         try
         {
             var document = InventoryDocument.Create(
-                request.CompanyId,
+                request.CompanyCen,
                 warehouse.Id,
                 docType,
                 DateTime.UtcNow,
@@ -45,7 +45,7 @@ public class CreateInventoryDocumentHandler(
             foreach (var lineRequest in request.Request.Lines)
             {
                 var product = await productRepository.GetByCenAsync(lineRequest.ProductCen, cancellationToken);
-                if (product == null || product.CompanyId != request.CompanyId)
+                if (product == null || product.CompanyCen != request.CompanyCen)
                     throw new ArgumentException($"Producto {lineRequest.ProductCen} no válido.");
 
                 var quantity = (decimal)lineRequest.Quantity;
@@ -54,7 +54,7 @@ public class CreateInventoryDocumentHandler(
                 var stock = await stockRepository.GetStockByProductAndWarehouseAsync(product.Id, warehouse.Id, cancellationToken);
                 if (stock == null)
                 {
-                    stock = ProductStock.Create(request.CompanyId, product.Id, warehouse.Id);
+                    stock = ProductStock.Create(request.CompanyCen, product.Id, warehouse.Id);
                     stockRepository.Add(stock);
                 }
 
@@ -71,7 +71,7 @@ public class CreateInventoryDocumentHandler(
                     stock.SubtractQuantity(quantity);
 
                 var movement = KardexMovement.Create(
-                    request.CompanyId,
+                    request.CompanyCen,
                     product.Id,
                     warehouse.Id,
                     movType,

@@ -6,7 +6,7 @@ public class Product
 {
     public int Id { get; private set; }
     public string Cen { get; private set; } = null!;
-    public Guid CompanyId { get; private set; } // Logical ref to Core
+    public string CompanyCen { get; private set; } = null!; // Logical ref to Core
     public int CategoryId { get; private set; }
     public int UnitId { get; private set; }
     public int? SupplierId { get; private set; }
@@ -25,10 +25,10 @@ public class Product
 
     protected Product() { }
 
-    private Product(string cen, Guid companyId, int categoryId, int unitId, int? supplierId, string? code, string name, decimal price, ProductStatus status, string? imageUrl, decimal minStockAlert, DateTime createdAt)
+    private Product(string cen, string companyCen, int categoryId, int unitId, int? supplierId, string? code, string name, decimal price, ProductStatus status, string? imageUrl, decimal minStockAlert, DateTime createdAt)
     {
         Cen = cen;
-        CompanyId = companyId;
+        CompanyCen = companyCen;
         CategoryId = categoryId;
         UnitId = unitId;
         SupplierId = supplierId;
@@ -41,11 +41,11 @@ public class Product
         CreatedAt = createdAt;
     }
 
-    public static Product Create(Guid companyId, int categoryId, int unitId, string name, decimal price, string? code = null, int? supplierId = null, string? imageUrl = null, decimal minStockAlert = 0)
+    public static Product Create(string companyCen, int categoryId, int unitId, string name, decimal price, string? code = null, int? supplierId = null, string? imageUrl = null, decimal minStockAlert = 0)
     {
         Validate(name, categoryId, unitId, price);
         var cen = $"PROD-{Guid.CreateVersion7()}";
-        return new Product(cen, companyId, categoryId, unitId, supplierId, code, name, price, ProductStatus.Activo, imageUrl, minStockAlert, DateTime.UtcNow);
+        return new Product(cen, companyCen, categoryId, unitId, supplierId, code, name, price, ProductStatus.Activo, imageUrl, minStockAlert, DateTime.UtcNow);
     }
 
     public void Update(string name, int categoryId, int unitId, decimal price, string? code, int? supplierId, string? imageUrl, decimal minStockAlert)

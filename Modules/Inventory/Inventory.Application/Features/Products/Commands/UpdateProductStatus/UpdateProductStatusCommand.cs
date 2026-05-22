@@ -5,6 +5,6 @@ namespace Inventory.Application.Features.Products.Commands.UpdateProductStatus;
 
 public record UpdateProductStatusCommand(
     string ProductCen,
-    Guid CompanyId,
+    string CompanyCen,
     ProductStatus Status
 ) : IRequest<bool>;

@@ -3,4 +3,4 @@ using Shared.Contracts.Inventory;
 
 namespace Inventory.Application.Features.Dashboard.Queries.GetDashboardMetrics;
 
-public record GetDashboardMetricsQuery(Guid CompanyId) : IRequest<InventoryDashboardContractDto>;
+public record GetDashboardMetricsQuery(string CompanyCen) : IRequest<InventoryDashboardContractDto>;

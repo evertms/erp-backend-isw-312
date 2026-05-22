@@ -11,7 +11,7 @@ public class UpdateCategoryHandler(
     {
         var category = await categoryRepository.GetByCenAsync(request.CategoryCen, cancellationToken);
 
-        if (category == null || category.CompanyId != request.CompanyId)
+        if (category == null || category.CompanyCen != request.CompanyCen)
         {
             return false; // NotFound or Unauthorized
         }

@@ -12,7 +12,7 @@ public class ValidateStockHandler(
     public async Task<StockValidationContractResponse> Handle(ValidateStockCommand request, CancellationToken cancellationToken)
     {
         var warehouse = await warehouseRepository.GetByCenAsync(request.Request.WarehouseCen, cancellationToken);
-        if (warehouse == null || warehouse.CompanyId != request.CompanyId)
+        if (warehouse == null || warehouse.CompanyCen != request.CompanyCen)
             throw new ArgumentException("Almacén no válido.");
 
         var requirements = new List<StockRequirementContractDto>();
@@ -21,7 +21,7 @@ public class ValidateStockHandler(
         foreach (var itemRequest in request.Request.Items)
         {
             var product = await productRepository.GetByCenAsync(itemRequest.ProductCen, cancellationToken);
-            if (product == null || product.CompanyId != request.CompanyId)
+            if (product == null || product.CompanyCen != request.CompanyCen)
                 throw new ArgumentException($"Producto {itemRequest.ProductCen} no válido.");
 
             var stock = await stockRepository.GetStockByProductAndWarehouseAsync(product.Id, warehouse.Id, cancellationToken);

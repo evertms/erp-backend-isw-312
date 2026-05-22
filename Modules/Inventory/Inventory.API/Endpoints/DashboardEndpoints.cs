@@ -12,10 +12,7 @@ public static class DashboardEndpoints
 
         group.MapGet("/", async (string companyCen, IMediator mediator) =>
         {
-            if (!Guid.TryParse(companyCen, out var companyId))
-                return Results.BadRequest(new { Error = "CEN de empresa no válido." });
-
-            var metrics = await mediator.Send(new GetDashboardMetricsQuery(companyId));
+            var metrics = await mediator.Send(new GetDashboardMetricsQuery(companyCen));
             return Results.Ok(metrics);
         });
     }

@@ -4,7 +4,7 @@ namespace Inventory.Application.Features.Categories.Commands.UpdateCategory;
 
 public record UpdateCategoryCommand(
     string CategoryCen,
-    Guid CompanyId,
+    string CompanyCen,
     string Name,
     string? Description
 ) : IRequest<bool>;

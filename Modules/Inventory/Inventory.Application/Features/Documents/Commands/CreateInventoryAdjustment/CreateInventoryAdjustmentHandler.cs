@@ -17,7 +17,7 @@ public class CreateInventoryAdjustmentHandler(
     public async Task<InventoryAdjustmentContractResponse> Handle(CreateInventoryAdjustmentCommand request, CancellationToken cancellationToken)
     {
         var warehouse = await warehouseRepository.GetByCenAsync(request.Request.WarehouseCen, cancellationToken);
-        if (warehouse == null || warehouse.CompanyId != request.CompanyId)
+        if (warehouse == null || warehouse.CompanyCen != request.CompanyCen)
             throw new ArgumentException("Almacén no válido.");
 
         await unitOfWork.BeginTransactionAsync(cancellationToken);
@@ -25,7 +25,7 @@ public class CreateInventoryAdjustmentHandler(
         try
         {
             var document = InventoryDocument.Create(
-                request.CompanyId,
+                request.CompanyCen,
                 warehouse.Id,
                 DocumentType.Ajuste,
                 DateTime.UtcNow,
@@ -41,7 +41,7 @@ public class CreateInventoryAdjustmentHandler(
             foreach (var lineRequest in request.Request.Lines)
             {
                 var product = await productRepository.GetByCenAsync(lineRequest.ProductCen, cancellationToken);
-                if (product == null || product.CompanyId != request.CompanyId)
+                if (product == null || product.CompanyCen != request.CompanyCen)
                     throw new ArgumentException($"Producto {lineRequest.ProductCen} no válido.");
 
                 var quantity = (decimal)lineRequest.Quantity;
@@ -50,7 +50,7 @@ public class CreateInventoryAdjustmentHandler(
                 var stock = await stockRepository.GetStockByProductAndWarehouseAsync(product.Id, warehouse.Id, cancellationToken);
                 if (stock == null)
                 {
-                    stock = ProductStock.Create(request.CompanyId, product.Id, warehouse.Id);
+                    stock = ProductStock.Create(request.CompanyCen, product.Id, warehouse.Id);
                     stockRepository.Add(stock);
                 }
 
@@ -71,7 +71,7 @@ public class CreateInventoryAdjustmentHandler(
                     stock.SubtractQuantity(quantity);
 
                 var movement = KardexMovement.Create(
-                    request.CompanyId,
+                    request.CompanyCen,
                     product.Id,
                     warehouse.Id,
                     movType,

@@ -4,21 +4,21 @@ public class Unit
 {
     public int Id { get; private set; }
     public string Cen { get; private set; } = null!;
-    public Guid CompanyId { get; private set; } // Logical ref to Core
+    public string CompanyCen { get; private set; } = null!; // Logical ref to Core
     public string Name { get; private set; } = null!;
     public string Code { get; private set; } = null!;
 
     protected Unit() { }
 
-    private Unit(string cen, Guid companyId, string name, string code)
+    private Unit(string cen, string companyCen, string name, string code)
     {
         Cen = cen;
-        CompanyId = companyId;
+        CompanyCen = companyCen;
         Name = name;
         Code = code;
     }
 
-    public static Unit Create(Guid companyId, string name, string code)
+    public static Unit Create(string companyCen, string name, string code)
     {
         // Regla de Integridad de Unidades: Código y nombre obligatorios.
         // La duplicidad se validará en la base de datos o en la capa de Aplicación
@@ -29,7 +29,7 @@ public class Unit
             throw new ArgumentException("El código no puede estar vacío.", nameof(code));
 
         var cen = $"UNT-{Guid.CreateVersion7()}";
-        return new Unit(cen, companyId, name, code);
+        return new Unit(cen, companyCen, name, code);
     }
 
     public void Update(string name, string code)

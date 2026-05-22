@@ -11,7 +11,7 @@ public class UpdateUnitHandler(
     {
         var unit = await unitRepository.GetByCenAsync(request.UnitCen, cancellationToken);
 
-        if (unit == null || unit.CompanyId != request.CompanyId)
+        if (unit == null || unit.CompanyCen != request.CompanyCen)
         {
             return false;
         }
@@ -19,7 +19,7 @@ public class UpdateUnitHandler(
         // Validar duplicidad en nombre si lo cambió
         if (unit.Name != request.Name)
         {
-            var isNameUnique = await unitRepository.IsNameUniqueAsync(request.CompanyId, request.Name, cancellationToken);
+            var isNameUnique = await unitRepository.IsNameUniqueAsync(request.CompanyCen, request.Name, cancellationToken);
             if (!isNameUnique)
             {
                 throw new InvalidOperationException("Ya existe otra unidad de medida con ese nombre.");
@@ -29,7 +29,7 @@ public class UpdateUnitHandler(
         // Validar duplicidad en código si lo cambió
         if (unit.Code != request.Code)
         {
-            var isCodeUnique = await unitRepository.IsCodeUniqueAsync(request.CompanyId, request.Code, cancellationToken);
+            var isCodeUnique = await unitRepository.IsCodeUniqueAsync(request.CompanyCen, request.Code, cancellationToken);
             if (!isCodeUnique)
             {
                 throw new InvalidOperationException("Ya existe otra unidad de medida con ese código.");
