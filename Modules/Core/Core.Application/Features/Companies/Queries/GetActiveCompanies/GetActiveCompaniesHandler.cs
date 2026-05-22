@@ -9,6 +9,6 @@ public class GetActiveCompaniesHandler(ICompanyRepository companyRepository) : I
     public async Task<List<CompanyDto>> Handle(GetActiveCompaniesQuery request, CancellationToken cancellationToken)
     {
         var companies = await companyRepository.GetActiveCompaniesAsync(cancellationToken);
-        return companies.Select(c => new CompanyDto(c.Id, c.Name)).ToList();
+        return companies.Select(c => new CompanyDto(c.Id, c.Cen, c.Name)).ToList();
     }
 }

@@ -4,5 +4,6 @@ namespace Inventory.Domain.Repositories;
 
 public interface IKardexMovementRepository
 {
-    Task<List<KardexMovement>> GetMovementsByProductIdAsync(Guid productId, CancellationToken cancellationToken = default);
+    Task<List<KardexMovement>> GetMovementsByProductIdAsync(int productId, CancellationToken cancellationToken = default);
+    void Add(KardexMovement movement);
 }

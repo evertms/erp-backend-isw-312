@@ -6,14 +6,16 @@ namespace Core.Infrastructure.Persistence;
 
 public static class CoreSeeder
 {
-    public static async Task<Guid> SeedAsync(CoreDbContext context)
+    public const string DefaultCompanyCen = "COM-DEV-001";
+
+    public static async Task SeedAsync(CoreDbContext context)
     {
         // Buscar si ya existe alguna empresa
-        var company = await context.Companies.FirstOrDefaultAsync();
+        var company = await context.Companies.FirstOrDefaultAsync(c => c.Cen == DefaultCompanyCen);
         
         if (company is null)
         {
-            company = Company.Create("Empresa de Desarrollo S.A.");
+            company = Company.CreateWithCen(DefaultCompanyCen, "Empresa de Desarrollo S.A.");
             context.Companies.Add(company);
             await context.SaveChangesAsync();
         }
@@ -25,7 +27,5 @@ public static class CoreSeeder
             context.Users.Add(admin);
             await context.SaveChangesAsync();
         }
-
-        return company.Id;
     }
 }

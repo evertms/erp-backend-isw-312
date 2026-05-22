@@ -1,5 +1,4 @@
 using Core.Infrastructure;
-using Inventory.Infrastructure;
 using Sales.Infrastructure;
 using Web.API.Extensions;
 
@@ -12,7 +11,6 @@ builder.Services.AddSwaggerGen();
 
 // Register modules
 builder.Services.AddCoreModule(builder.Configuration);
-builder.Services.AddInventoryModule(builder.Configuration);
 builder.Services.AddSalesModule();
 
 // Add CORS for frontend
@@ -49,6 +47,5 @@ app.MapControllers();
 
 // Map modules endpoints
 app.MapCoreModuleEndpoints();
-app.MapInventoryModuleEndpoints();
 
 app.Run();

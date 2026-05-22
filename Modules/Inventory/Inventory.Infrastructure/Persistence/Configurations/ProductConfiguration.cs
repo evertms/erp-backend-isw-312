@@ -11,6 +11,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.ToTable("products");
         builder.HasKey(x => x.Id);
         
+        builder.Property(x => x.Cen).IsRequired().HasMaxLength(50);
+        builder.HasIndex(x => x.Cen).IsUnique();
+
         builder.Property(x => x.Name).IsRequired().HasMaxLength(255);
         builder.Property(x => x.Price).HasPrecision(18, 2);
         builder.Property(x => x.Status).HasConversion<string>();
