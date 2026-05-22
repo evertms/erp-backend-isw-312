@@ -81,4 +81,16 @@ public class TicketLine
             
         Status = TicketLineStatus.Served;
     }
+
+    public void Update(decimal quantity, string? notes)
+    {
+        if (Status != TicketLineStatus.Pending)
+            throw new InvalidOperationException("Solo se pueden actualizar ítems en estado pendiente.");
+
+        if (quantity <= 0)
+            throw new ArgumentException("La cantidad debe ser mayor a 0.", nameof(quantity));
+
+        Quantity = quantity;
+        Notes = notes;
+    }
 }
