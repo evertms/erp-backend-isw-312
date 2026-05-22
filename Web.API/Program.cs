@@ -11,7 +11,7 @@ builder.Services.AddSwaggerGen();
 
 // Register modules
 builder.Services.AddCoreModule(builder.Configuration);
-builder.Services.AddSalesModule();
+builder.Services.AddSalesModule(builder.Configuration);
 
 // Add CORS for frontend
 builder.Services.AddCors(options =>
