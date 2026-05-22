@@ -13,6 +13,9 @@ public static class PaymentMethodEndpoints
             new("Efectivo", "Efectivo", true),
             new("Tarjeta", "Tarjeta de Crédito/Débito", true),
             new("Qr", "Pago QR", true)
-        }));
+        }))
+        .Produces<List<PaymentMethodContractResponse>>(StatusCodes.Status200OK)
+        .WithName("GetPaymentMethods")
+        .WithSummary("Lista metodos de pago");
     }
 }

@@ -1,3 +1,5 @@
+using Shared.Contracts.Sales;
+
 namespace Sales.API.Endpoints;
 
 public static class TaxConfigurationEndpoints
@@ -6,6 +8,9 @@ public static class TaxConfigurationEndpoints
     {
         var group = app.MapGroup("/api/sales/companies/{companyCen}/tax-configuration").WithTags("TaxConfigurationContract");
 
-        group.MapGet("/", (string companyCen) => Results.Ok(new { companyCen, globalTaxPercentage = 13.0 }));
+        group.MapGet("/", (string companyCen) => Results.Ok(new TaxConfigurationContractResponse(companyCen, 13.0)))
+        .Produces<TaxConfigurationContractResponse>(StatusCodes.Status200OK)
+        .WithName("GetTaxConfiguration")
+        .WithSummary("Obtiene configuracion de impuestos");
     }
 }
