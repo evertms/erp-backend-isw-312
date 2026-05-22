@@ -36,8 +36,9 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("CompanyCen")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
@@ -69,8 +70,9 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("CompanyCen")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -154,8 +156,9 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("CompanyCen")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int?>("DocumentId")
                         .HasColumnType("integer");
@@ -213,8 +216,9 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("CompanyCen")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -271,8 +275,9 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("CompanyCen")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("CurrentQuantity")
                         .HasPrecision(18, 4)
@@ -313,8 +318,9 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("CompanyCen")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("ContactInfo")
                         .HasMaxLength(255)
@@ -354,8 +360,9 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("CompanyCen")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -383,8 +390,9 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("CompanyCen")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");

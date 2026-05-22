@@ -23,7 +23,7 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyCen = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true)
                 },
@@ -40,7 +40,7 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyCen = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     ContactInfo = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false)
@@ -58,7 +58,7 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyCen = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Code = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
                 },
@@ -75,7 +75,7 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyCen = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Location = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false)
@@ -93,7 +93,7 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyCen = table.Column<string>(type: "text", nullable: false),
                     CategoryId = table.Column<int>(type: "integer", nullable: false),
                     UnitId = table.Column<int>(type: "integer", nullable: false),
                     SupplierId = table.Column<int>(type: "integer", nullable: true),
@@ -138,7 +138,7 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyCen = table.Column<string>(type: "text", nullable: false),
                     WarehouseId = table.Column<int>(type: "integer", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
@@ -166,7 +166,7 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyCen = table.Column<string>(type: "text", nullable: false),
                     ProductId = table.Column<int>(type: "integer", nullable: false),
                     WarehouseId = table.Column<int>(type: "integer", nullable: false),
                     CurrentQuantity = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: false),
@@ -230,7 +230,7 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Cen = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyCen = table.Column<string>(type: "text", nullable: false),
                     ProductId = table.Column<int>(type: "integer", nullable: false),
                     WarehouseId = table.Column<int>(type: "integer", nullable: false),
                     DocumentId = table.Column<int>(type: "integer", nullable: true),
