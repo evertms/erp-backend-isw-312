@@ -33,7 +33,7 @@ public class SendTicketToKitchenHandler(
             l.Notes,
             l.Status.ToString(),
             l.SentAt?.ToString("o"),
-            l.CommandNumber ?? 0
+            l.ResendCount
         )).ToList();
     }
 }
