@@ -27,9 +27,13 @@ public interface ITicketLineRepository
 public interface IStationCategoryConfigRepository
 {
     Task<List<StationCategoryConfig>> GetByCompanyCenAsync(string companyCen, CancellationToken cancellationToken = default);
+    Task<StationCategoryConfig?> GetByCenAsync(string cen, CancellationToken cancellationToken = default);
 }
 
 public interface IUnitOfWork
 {
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task BeginTransactionAsync(CancellationToken cancellationToken = default);
+    Task CommitTransactionAsync(CancellationToken cancellationToken = default);
+    Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
 }

@@ -71,7 +71,7 @@ public class AddTicketLineHandler(
             addedLine.Notes,
             addedLine.Status.ToString(),
             addedLine.SentAt?.ToString("o"),
-            addedLine.CommandNumber ?? 0
+            addedLine.ResendCount
         );
     }
 }

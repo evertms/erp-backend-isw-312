@@ -40,7 +40,7 @@ public class UpdateTicketItemHandler(
             line.Notes,
             line.Status.ToString(),
             line.SentAt?.ToString("o"),
-            line.CommandNumber ?? 0
+            line.ResendCount
         );
     }
 }

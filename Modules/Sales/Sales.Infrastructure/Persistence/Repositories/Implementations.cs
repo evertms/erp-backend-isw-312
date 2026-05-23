@@ -89,6 +89,12 @@ public class StationCategoryConfigRepository(SalesDbContext dbContext) : IStatio
             .Where(s => s.CompanyCen == companyCen)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<StationCategoryConfig?> GetByCenAsync(string cen, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.StationCategoryConfigs
+            .FirstOrDefaultAsync(s => s.Cen == cen, cancellationToken);
+    }
 }
 
 public class UnitOfWork(SalesDbContext dbContext) : IUnitOfWork
@@ -96,5 +102,26 @@ public class UnitOfWork(SalesDbContext dbContext) : IUnitOfWork
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        await dbContext.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        if (dbContext.Database.CurrentTransaction != null)
+        {
+            await dbContext.Database.CurrentTransaction.CommitAsync(cancellationToken);
+        }
+    }
+
+    public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        if (dbContext.Database.CurrentTransaction != null)
+        {
+            await dbContext.Database.CurrentTransaction.RollbackAsync(cancellationToken);
+        }
     }
 }

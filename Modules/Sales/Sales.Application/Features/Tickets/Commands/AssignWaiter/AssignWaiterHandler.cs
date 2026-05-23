@@ -27,7 +27,7 @@ public class AssignWaiterHandler(
 
         return new AssignTicketWaiterContractResponse(
             ticket.Cen,
-            ticket.WaiterCen,
+            ticket.WaiterCen ?? String.Empty,
             string.Empty
         );
     }

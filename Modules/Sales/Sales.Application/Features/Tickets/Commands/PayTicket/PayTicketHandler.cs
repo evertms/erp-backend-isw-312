@@ -50,39 +50,52 @@ public class PayTicketHandler(
                 .ToList());
         }
 
-        // 2. Procesar Pago Localmente
+        // 2. Procesar Pago Localmente con Transacción
         if (!Enum.TryParse<PaymentMethod>(command.Request.PaymentMethodCode, true, out var method))
         {
             throw new ArgumentException($"El método de pago '{command.Request.PaymentMethodCode}' no es válido.");
         }
 
-        ticket.Pay(method, ticket.Total);
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        await ticketRepository.UpdateAsync(ticket, cancellationToken);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        try 
+        {
+            ticket.Pay(method, ticket.Total);
 
-        // 3. Consumir Stock (Fase 2 del 2PC)
-        var consumeRequest = new StockConsumeContractRequest(
-            warehouseCen,
-            "SalesModule",
-            ticket.Cen,
-            $"Venta ticket {ticket.Cen}",
-            ticket.Lines.Select(l => new StockConsumeItemContractDto(l.ProductCen, (double)l.Quantity)).ToList()
-        );
+            await ticketRepository.UpdateAsync(ticket, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var consumeResponse = await inventoryService.ConsumeStockAsync(command.CompanyCen, consumeRequest, cancellationToken);
+            // 3. Consumir Stock (Fase 2 del 2PC - Llamada Externa)
+            var consumeRequest = new StockConsumeContractRequest(
+                warehouseCen,
+                "SalesModule",
+                ticket.Cen,
+                $"Venta ticket {ticket.Cen}",
+                ticket.Lines.Select(l => new StockConsumeItemContractDto(l.ProductCen, (double)l.Quantity)).ToList()
+            );
 
-        var recentPayment = ticket.Payments.LastOrDefault();
+            // Si esto lanza excepción o falla, el catch hará el rollback de la DB local
+            var consumeResponse = await inventoryService.ConsumeStockAsync(command.CompanyCen, consumeRequest, cancellationToken);
 
-        return new PayTicketContractResponse(
-            recentPayment?.Cen ?? throw new InvalidOperationException("No se generó el registro de pago en el dominio."),
-            ticket.Cen,
-            ticket.Status.ToString(),
-            (double)ticket.Subtotal,
-            (double)ticket.TaxAmount,
-            (double)ticket.Total,
-            consumeResponse.DocumentCen
-        );
+            await unitOfWork.CommitTransactionAsync(cancellationToken);
+
+            var recentPayment = ticket.Payments.LastOrDefault();
+
+            return new PayTicketContractResponse(
+                recentPayment?.Cen ?? throw new InvalidOperationException("No se generó el registro de pago en el dominio."),
+                ticket.Cen,
+                ticket.Status.ToString(),
+                (double)ticket.Subtotal,
+                (double)ticket.TaxAmount,
+                (double)ticket.Total,
+                consumeResponse.DocumentCen
+            );
+        }
+        catch (Exception)
+        {
+            await unitOfWork.RollbackTransactionAsync(cancellationToken);
+            throw;
+        }
     }
 }
 
