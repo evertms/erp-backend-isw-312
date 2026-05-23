@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Sales.Infrastructure.Persistence;
+using Core.Infrastructure.Persistence;
 
 namespace Sales.API.Extensions;
 
@@ -9,10 +10,14 @@ public static class MigrationExtensions
     {
         using var scope = app.ApplicationServices.CreateScope();
         
-        var context = scope.ServiceProvider.GetRequiredService<SalesDbContext>();
+        // 1. Core Module (Shared Data)
+        var coreContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+        await coreContext.Database.MigrateAsync();
+        await CoreSeeder.SeedAsync(coreContext);
 
-        await context.Database.MigrateAsync();
-
-        await SalesSeeder.SeedAsync(context, "COM-DEV-001");
+        // 2. Sales Module
+        var salesContext = scope.ServiceProvider.GetRequiredService<SalesDbContext>();
+        await salesContext.Database.MigrateAsync();
+        await SalesSeeder.SeedAsync(salesContext, "COM-DEV-001");
     }
 }

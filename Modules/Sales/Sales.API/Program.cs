@@ -1,6 +1,7 @@
 using Sales.API.Endpoints;
 using Sales.API.Extensions;
 using Sales.Infrastructure;
+using Core.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.AddCors(options =>
     });
 });
 builder.Services.AddSalesModule(builder.Configuration);
+builder.Services.AddCoreModule(builder.Configuration);
 
 var app = builder.Build();
 
