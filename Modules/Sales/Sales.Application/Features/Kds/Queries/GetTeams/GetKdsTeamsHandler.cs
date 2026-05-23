@@ -12,12 +12,13 @@ public class GetKdsTeamsHandler(IStationCategoryConfigRepository configRepositor
     {
         var configs = await configRepository.GetByCompanyCenAsync(request.CompanyCen, cancellationToken);
 
+        // Devolvemos el CEN real (STCFG-...) para que el frontend lo use, 
+        // pero el nombre amigable (Cocina, Bar) para que el usuario no se pierda.
         return configs
-            .GroupBy(c => c.Station)
-            .Select(g => new KdsTeamContractResponse(
-                $"TEAM-{g.Key}", // Virtual team Cen
-                g.Key.ToString(),
-                g.Select(c => c.CategoryCen).ToList()
+            .Select(c => new KdsTeamContractResponse(
+                c.Cen,
+                c.Station.ToString(),
+                new List<string> { c.CategoryCen }
             ))
             .ToList();
     }
