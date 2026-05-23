@@ -9,6 +9,7 @@ public class TicketLine
     public int TicketId { get; private set; }
     
     public int? CommandNumber { get; private set; }
+    public int ResendCount { get; private set; }
     public string ProductCen { get; private set; } = null!; // Logical Ref (Inventory.Products) - Immutable Replica
     public string ProductName { get; private set; } = null!; // Replica
     public decimal Quantity { get; private set; }
@@ -92,5 +93,15 @@ public class TicketLine
 
         Quantity = quantity;
         Notes = notes;
+    }
+
+    public void Resend()
+    {
+        if (Status == TicketLineStatus.Pending)
+            throw new InvalidOperationException("No se puede reenviar un ítem pendiente.");
+
+        ResendCount++;
+        SentAt = DateTime.UtcNow;
+        Status = TicketLineStatus.Preparing;
     }
 }
