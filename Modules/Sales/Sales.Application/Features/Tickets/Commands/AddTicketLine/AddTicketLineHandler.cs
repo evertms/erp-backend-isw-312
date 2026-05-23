@@ -16,6 +16,7 @@ public record AddTicketLineCommand(
 public class AddTicketLineHandler(
     ITicketRepository ticketRepository,
     IInventoryIntegrationService inventoryService,
+    IStationCategoryConfigRepository configRepository,
     IUnitOfWork unitOfWork) : IRequestHandler<AddTicketLineCommand, TicketItemContractResponse>
 {
     public async Task<TicketItemContractResponse> Handle(AddTicketLineCommand command, CancellationToken cancellationToken)
@@ -29,11 +30,22 @@ public class AddTicketLineHandler(
         if (product == null)
             throw new ArgumentException("Producto no encontrado en inventario.");
 
-        // Determine station from product (optional)
+        // 1. Intentar determinar estación desde el código explícito del producto
         Station? station = null;
         if (!string.IsNullOrEmpty(product.StationCode) && Enum.TryParse<Station>(product.StationCode, true, out var parsedStation))
         {
             station = parsedStation;
+        }
+
+        // 2. Si es nulo, buscar en la configuración global de la empresa por categoría
+        if (station == null && !string.IsNullOrEmpty(product.CategoryCen))
+        {
+            var configs = await configRepository.GetByCompanyCenAsync(command.CompanyCen, cancellationToken);
+            var match = configs.FirstOrDefault(c => c.CategoryCen == product.CategoryCen);
+            if (match != null)
+            {
+                station = match.Station;
+            }
         }
 
         ticket.AddLine(
