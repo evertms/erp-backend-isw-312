@@ -1,4 +1,5 @@
 using Sales.API.Endpoints;
+using Sales.API.Extensions;
 using Sales.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +36,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 app.UseAuthorization();
 
+await app.ApplyMigrationsAndSeedAsync();
+
 // Map endpoints
 app.MapTicketEndpoints();
 app.MapKdsEndpoints();
@@ -42,5 +45,6 @@ app.MapDashboardEndpoints();
 app.MapPaymentMethodEndpoints();
 app.MapTaxConfigurationEndpoints();
 app.MapCatalogEndpoints();
+app.MapWaitersEndpoints();
 
 app.Run();

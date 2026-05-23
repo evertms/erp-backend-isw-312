@@ -7,9 +7,11 @@ using Sales.Application.Features.Tickets.Commands.CancelTicket;
 using Sales.Application.Features.Tickets.Commands.PayTicket;
 using Sales.Application.Features.Tickets.Commands.UpdateTicketItem;
 using Sales.Application.Features.Tickets.Commands.SendToKitchen;
+using Sales.Application.Features.Tickets.Commands.ResendTicketItem;
 using Sales.Application.Features.Tickets.Queries.GetTicketTotals;
 using Sales.Application.Features.Tickets.Queries.GetDailyTickets;
 using Sales.Application.Features.Tickets.Queries.GetTicketItems;
+using Sales.Application.Features.Tickets.Queries.PrintTicket;
 using Shared.Contracts.Sales;
 
 namespace Sales.API.Endpoints;
@@ -46,6 +48,15 @@ public static class TicketEndpoints
         .Produces<TicketTotalsContractResponse>(StatusCodes.Status200OK)
         .WithName("GetTicketTotals")
         .WithSummary("Obtiene totales de un ticket");
+
+        group.MapGet("/{ticketCen}/print", async (string companyCen, string ticketCen, ISender sender) =>
+        {
+            var result = await sender.Send(new PrintTicketQuery(companyCen, ticketCen));
+            return Results.File(result, "text/plain", $"ticket_{ticketCen}.txt");
+        })
+        .Produces(StatusCodes.Status200OK)
+        .WithName("PrintTicket")
+        .WithSummary("Imprime un ticket");
 
         group.MapPut("/{ticketCen}/waiter", async (string companyCen, string ticketCen, AssignTicketWaiterContractRequest request, ISender sender) =>
         {
@@ -125,5 +136,14 @@ public static class TicketEndpoints
         .Produces<TicketItemContractResponse>(StatusCodes.Status200OK)
         .WithName("UpdateTicketItem")
         .WithSummary("Actualiza un item de ticket");
+
+        itemsGroup.MapPost("/{ticketItemCen}/resend", async (string companyCen, string ticketCen, string ticketItemCen, ISender sender) =>
+        {
+            var result = await sender.Send(new ResendTicketItemCommand(companyCen, ticketCen, ticketItemCen));
+            return Results.Ok(result);
+        })
+        .Produces<TicketItemContractResponse>(StatusCodes.Status200OK)
+        .WithName("ResendTicketItem")
+        .WithSummary("Reenvia un item a cocina");
     }
 }
