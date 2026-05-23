@@ -1,3 +1,5 @@
+using MediatR;
+using Sales.Application.Features.TaxConfiguration.Commands.UpdateTaxConfiguration;
 using Shared.Contracts.Sales;
 
 namespace Sales.API.Endpoints;
@@ -12,5 +14,14 @@ public static class TaxConfigurationEndpoints
         .Produces<TaxConfigurationContractResponse>(StatusCodes.Status200OK)
         .WithName("GetTaxConfiguration")
         .WithSummary("Obtiene configuracion de impuestos");
+
+        group.MapPut("/", async (string companyCen, UpdateTaxConfigurationContractRequest request, ISender sender) =>
+        {
+            var result = await sender.Send(new UpdateTaxConfigurationCommand(companyCen, request));
+            return Results.Ok(result);
+        })
+        .Produces<TaxConfigurationContractResponse>(StatusCodes.Status200OK)
+        .WithName("UpdateTaxConfiguration")
+        .WithSummary("Actualiza configuracion de impuestos");
     }
 }
