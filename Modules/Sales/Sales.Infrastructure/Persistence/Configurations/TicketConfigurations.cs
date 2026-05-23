@@ -15,7 +15,7 @@ public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         builder.HasIndex(t => t.Cen).IsUnique();
 
         builder.Property(t => t.CompanyCen).IsRequired().HasMaxLength(50);
-        builder.Property(t => t.WaiterCen).IsRequired().HasMaxLength(50);
+        builder.Property(t => t.WaiterCen).HasMaxLength(50);
         builder.Property(t => t.CustomerCen).HasMaxLength(50);
 
         builder.Property(t => t.Status).HasConversion<string>();
