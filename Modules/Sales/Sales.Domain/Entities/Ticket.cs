@@ -8,7 +8,7 @@ public class Ticket
     public string Cen { get; private set; } = null!;
     public string CompanyCen { get; private set; } = null!; // Logical Ref (Core)
     public string? CustomerCen { get; private set; } // Logical Ref (Core.Customers)
-    public string WaiterCen { get; private set; } = null!; // Logical Ref (Core.Users)
+    public string? WaiterCen { get; private set; } // Logical Ref (Core.Users)
     
     public int DailyNumber { get; private set; }
     public TicketStatus Status { get; private set; }
@@ -28,7 +28,7 @@ public class Ticket
 
     protected Ticket() { }
 
-    private Ticket(string cen, string companyCen, string? customerCen, string waiterCen, decimal appliedTaxRate, int dailyNumber)
+    private Ticket(string cen, string companyCen, string? customerCen, string? waiterCen, decimal appliedTaxRate, int dailyNumber)
     {
         Cen = cen;
         CompanyCen = companyCen;
@@ -40,11 +40,8 @@ public class Ticket
         CreatedAt = DateTime.UtcNow;
     }
 
-    public static Ticket Create(string companyCen, string waiterCen, decimal currentTaxRate, int dailyNumber, string? customerCen = null)
+    public static Ticket Create(string companyCen, string? waiterCen, decimal currentTaxRate, int dailyNumber, string? customerCen = null)
     {
-        if (string.IsNullOrWhiteSpace(waiterCen))
-            throw new ArgumentException("Es obligatorio asignar un mesero al ticket.", nameof(waiterCen));
-
         var cen = $"TICK-{Guid.CreateVersion7()}";
         return new Ticket(cen, companyCen, customerCen, waiterCen, currentTaxRate, dailyNumber);
     }

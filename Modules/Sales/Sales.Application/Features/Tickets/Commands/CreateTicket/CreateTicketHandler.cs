@@ -24,7 +24,7 @@ public class CreateTicketHandler(
 
         var ticket = Ticket.Create(
             command.CompanyCen,
-            command.Request.WaiterCen ?? string.Empty,
+            command.Request.WaiterCen,
             taxRate,
             nextNumber
         );
