@@ -46,7 +46,7 @@ public class Ticket
         return new Ticket(cen, companyCen, customerCen, waiterCen, currentTaxRate, dailyNumber);
     }
 
-    public void AddLine(string productCen, string productName, decimal quantity, decimal unitPrice, Station station, string? notes = null)
+    public void AddLine(string productCen, string productName, decimal quantity, decimal unitPrice, Station? station, string? notes = null)
     {
         // Regla de Inmutabilidad del Ticket Pagado
         if (Status == TicketStatus.Paid)

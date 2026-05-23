@@ -29,9 +29,12 @@ public class AddTicketLineHandler(
         if (product == null)
             throw new ArgumentException("Producto no encontrado en inventario.");
 
-        // Determine station from product
-        if (string.IsNullOrEmpty(product.StationCode) || !Enum.TryParse<Station>(product.StationCode, true, out var station))
-            throw new ArgumentException($"La estación '{product.StationCode}' del producto no es válida o no está configurada.");
+        // Determine station from product (optional)
+        Station? station = null;
+        if (!string.IsNullOrEmpty(product.StationCode) && Enum.TryParse<Station>(product.StationCode, true, out var parsedStation))
+        {
+            station = parsedStation;
+        }
 
         ticket.AddLine(
             product.ProductCen,

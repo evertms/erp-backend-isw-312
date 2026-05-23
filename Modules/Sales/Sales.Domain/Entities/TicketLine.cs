@@ -16,7 +16,7 @@ public class TicketLine
     public decimal UnitPrice { get; private set; } // Replica
     public string? Notes { get; private set; }
     
-    public Station Station { get; private set; }
+    public Station? Station { get; private set; }
     public DateTime? SentAt { get; private set; }
     public TicketLineStatus Status { get; private set; }
 
@@ -24,7 +24,7 @@ public class TicketLine
 
     protected TicketLine() { }
 
-    private TicketLine(string cen, int ticketId, string productCen, string productName, decimal quantity, decimal unitPrice, Station station, string? notes)
+    private TicketLine(string cen, int ticketId, string productCen, string productName, decimal quantity, decimal unitPrice, Station? station, string? notes)
     {
         Cen = cen;
         TicketId = ticketId;
@@ -37,7 +37,7 @@ public class TicketLine
         Status = TicketLineStatus.Pending;
     }
 
-    internal static TicketLine Create(int ticketId, string productCen, string productName, decimal quantity, decimal unitPrice, Station station, string? notes)
+    internal static TicketLine Create(int ticketId, string productCen, string productName, decimal quantity, decimal unitPrice, Station? station, string? notes)
     {
         if (quantity <= 0)
             throw new ArgumentException("La cantidad debe ser mayor a 0.", nameof(quantity));
