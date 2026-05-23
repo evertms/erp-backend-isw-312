@@ -4,8 +4,9 @@ namespace Sales.Domain.Entities;
 
 public class Payment
 {
-    public Guid Id { get; private set; }
-    public Guid TicketId { get; private set; }
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
+    public int TicketId { get; private set; }
     
     public PaymentMethod Method { get; private set; }
     public decimal Amount { get; private set; }
@@ -15,17 +16,18 @@ public class Payment
 
     protected Payment() { }
 
-    private Payment(Guid id, Guid ticketId, PaymentMethod method, decimal amount, DateTime paidAt)
+    private Payment(string cen, int ticketId, PaymentMethod method, decimal amount, DateTime paidAt)
     {
-        Id = id;
+        Cen = cen;
         TicketId = ticketId;
         Method = method;
         Amount = amount;
         PaidAt = paidAt;
     }
 
-    internal static Payment Create(Guid ticketId, PaymentMethod method, decimal amount)
+    internal static Payment Create(int ticketId, PaymentMethod method, decimal amount)
     {
-        return new Payment(Guid.NewGuid(), ticketId, method, amount, DateTime.UtcNow);
+        var cen = $"PAY-{Guid.CreateVersion7()}";
+        return new Payment(cen, ticketId, method, amount, DateTime.UtcNow);
     }
 }

@@ -8,10 +8,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Sales.Domain\Sales.Domain.csproj" />
+      <ProjectReference Include="..\..\..\Shared\Shared.Contracts\Shared.Contracts.csproj" />
     </ItemGroup>
     
     <ItemGroup>
         <PackageReference Include="MediatR" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     </ItemGroup>
 
 </Project>

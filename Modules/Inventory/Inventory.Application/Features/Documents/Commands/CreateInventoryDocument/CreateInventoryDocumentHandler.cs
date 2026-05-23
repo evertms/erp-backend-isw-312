@@ -35,8 +35,6 @@ public class CreateInventoryDocumentHandler(
                 request.Request.Reason
             );
 
-            // In our "atomic" requirement, we ignore complex states and immediately confirm
-            document.Confirm();
             documentRepository.Add(document);
             await unitOfWork.SaveChangesAsync(cancellationToken); // Get Document.Id
 
@@ -85,6 +83,7 @@ public class CreateInventoryDocumentHandler(
                 movements.Add(movement);
             }
 
+            document.Confirm();
             await unitOfWork.SaveChangesAsync(cancellationToken);
             await unitOfWork.CommitTransactionAsync(cancellationToken);
 

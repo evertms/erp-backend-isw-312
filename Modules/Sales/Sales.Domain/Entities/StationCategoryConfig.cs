@@ -4,23 +4,25 @@ namespace Sales.Domain.Entities;
 
 public class StationCategoryConfig
 {
-    public Guid Id { get; private set; }
-    public Guid CompanyId { get; private set; } // Logical Ref (Core)
-    public Guid CategoryId { get; private set; } // Logical Ref (Inventory.Categories)
+    public int Id { get; private set; }
+    public string Cen { get; private set; } = null!;
+    public string CompanyCen { get; private set; } = null!; // Logical Ref (Core)
+    public string CategoryCen { get; private set; } = null!; // Logical Ref (Inventory.Categories)
     public Station Station { get; private set; }
 
     protected StationCategoryConfig() { }
 
-    private StationCategoryConfig(Guid id, Guid companyId, Guid categoryId, Station station)
+    private StationCategoryConfig(string cen, string companyCen, string categoryCen, Station station)
     {
-        Id = id;
-        CompanyId = companyId;
-        CategoryId = categoryId;
+        Cen = cen;
+        CompanyCen = companyCen;
+        CategoryCen = categoryCen;
         Station = station;
     }
 
-    public static StationCategoryConfig Create(Guid companyId, Guid categoryId, Station station)
+    public static StationCategoryConfig Create(string companyCen, string categoryCen, Station station)
     {
-        return new StationCategoryConfig(Guid.NewGuid(), companyId, categoryId, station);
+        var cen = $"STCFG-{Guid.CreateVersion7()}";
+        return new StationCategoryConfig(cen, companyCen, categoryCen, station);
     }
 }

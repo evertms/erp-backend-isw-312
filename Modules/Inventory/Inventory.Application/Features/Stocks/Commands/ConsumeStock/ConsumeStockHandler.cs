@@ -32,7 +32,6 @@ public class ConsumeStockHandler(
                 request.Request.Reason ?? $"Consumo desde {request.Request.Source}"
             );
 
-            document.Confirm();
             documentRepository.Add(document);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -71,6 +70,7 @@ public class ConsumeStockHandler(
                 movementCens.Add(movement.Cen);
             }
 
+            document.Confirm();
             await unitOfWork.SaveChangesAsync(cancellationToken);
             await unitOfWork.CommitTransactionAsync(cancellationToken);
 
