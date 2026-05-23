@@ -29,9 +29,9 @@ public class AddTicketLineHandler(
         if (product == null)
             throw new ArgumentException("Producto no encontrado en inventario.");
 
-        // Determine station (Cocina/Bar) - for now default to Cocina if not configured
-        // In a real scenario, we'd lookup StationCategoryConfig
-        var station = product.StationCode?.ToLower() == "bar" ? Station.Bar : Station.Cocina;
+        // Determine station from product
+        if (string.IsNullOrEmpty(product.StationCode) || !Enum.TryParse<Station>(product.StationCode, true, out var station))
+            throw new ArgumentException($"La estación '{product.StationCode}' del producto no es válida o no está configurada.");
 
         ticket.AddLine(
             product.ProductCen,

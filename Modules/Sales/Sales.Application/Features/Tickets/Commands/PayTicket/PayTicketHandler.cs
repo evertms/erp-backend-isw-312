@@ -1,10 +1,10 @@
 using MediatR;
 using Sales.Application.Services;
-using Sales.Domain.Entities;
 using Sales.Domain.Enums;
 using Sales.Domain.Repositories;
 using Shared.Contracts.Inventory;
 using Shared.Contracts.Sales;
+using Microsoft.Extensions.Configuration;
 
 namespace Sales.Application.Features.Tickets.Commands.PayTicket;
 
@@ -17,7 +17,8 @@ public record PayTicketCommand(
 public class PayTicketHandler(
     ITicketRepository ticketRepository,
     IInventoryIntegrationService inventoryService,
-    IUnitOfWork unitOfWork) : IRequestHandler<PayTicketCommand, PayTicketContractResponse>
+    IUnitOfWork unitOfWork,
+    IConfiguration configuration) : IRequestHandler<PayTicketCommand, PayTicketContractResponse>
 {
     public async Task<PayTicketContractResponse> Handle(PayTicketCommand command, CancellationToken cancellationToken)
     {
@@ -28,9 +29,12 @@ public class PayTicketHandler(
         if (ticket.Status == TicketStatus.Paid)
             throw new InvalidOperationException("El ticket ya ha sido pagado.");
 
-        // 1. Validate Stock
+        var warehouseCen = configuration["InventorySettings:DefaultWarehouseCen"] 
+            ?? throw new InvalidOperationException("La bodega por defecto no está configurada en las variables de entorno.");
+
+        // 1. Validar Stock (Fase 1 del 2PC)
         var validationRequest = new StockValidationContractRequest(
-            "WH-DEFAULT-OR-DYNAMIC", // In a real scenario, determine the warehouse
+            warehouseCen,
             "SalesModule",
             ticket.Cen,
             ticket.Lines.Select(l => new StockValidationItemContractDto(l.ProductCen, (double)l.Quantity)).ToList()
@@ -40,18 +44,16 @@ public class PayTicketHandler(
         
         if (!validationResponse.IsValid)
         {
-            // The contract says conflict for insufficient stock, but usually Handlers return a result object or throw.
-            // Here I'll throw a custom exception that the controller can map to 409.
             throw new StockInsufficiencyException(validationResponse.Requirements
                 .Where(r => r.MissingQuantity > 0)
                 .Select(r => new StockInsufficiencyResponseDto(null, r.ProductCen, r.ProductName, r.WarehouseCen, (int)r.RequestedQuantity, (int)r.AvailableQuantity, (int)r.MissingQuantity))
                 .ToList());
         }
 
-        // 2. Process Local Payment
+        // 2. Procesar Pago Localmente
         if (!Enum.TryParse<PaymentMethod>(command.Request.PaymentMethodCode, true, out var method))
         {
-            method = PaymentMethod.Efectivo; // Default or throw
+            throw new ArgumentException($"El método de pago '{command.Request.PaymentMethodCode}' no es válido.");
         }
 
         ticket.Pay(method, ticket.Total);
@@ -59,9 +61,9 @@ public class PayTicketHandler(
         await ticketRepository.UpdateAsync(ticket, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // 3. Consume Stock
+        // 3. Consumir Stock (Fase 2 del 2PC)
         var consumeRequest = new StockConsumeContractRequest(
-            "WH-DEFAULT-OR-DYNAMIC",
+            warehouseCen,
             "SalesModule",
             ticket.Cen,
             $"Venta ticket {ticket.Cen}",
@@ -70,8 +72,10 @@ public class PayTicketHandler(
 
         var consumeResponse = await inventoryService.ConsumeStockAsync(command.CompanyCen, consumeRequest, cancellationToken);
 
+        var recentPayment = ticket.Payments.LastOrDefault();
+
         return new PayTicketContractResponse(
-            ticket.Payments.FirstOrDefault()?.Cen ?? "PAY-NEW",
+            recentPayment?.Cen ?? throw new InvalidOperationException("No se generó el registro de pago en el dominio."),
             ticket.Cen,
             ticket.Status.ToString(),
             (double)ticket.Subtotal,

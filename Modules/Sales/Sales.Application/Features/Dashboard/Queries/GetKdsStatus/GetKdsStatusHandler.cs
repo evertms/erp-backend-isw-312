@@ -15,7 +15,7 @@ public class GetKdsStatusHandler(ITicketRepository ticketRepository) : IRequestH
         var lines = tickets.SelectMany(t => t.Lines).ToList();
 
         return new KdsStatusDashboardDto(
-            lines.Count(l => l.Status == TicketLineStatus.Preparing), // Or specific logic for "Pending" in KDS
+            lines.Count(l => l.Status == TicketLineStatus.Pending),
             lines.Count(l => l.Status == TicketLineStatus.Preparing),
             lines.Count(l => l.Status == TicketLineStatus.Ready)
         );

@@ -14,7 +14,7 @@ public class GetKdsItemsHandler(ITicketRepository ticketRepository) : IRequestHa
         // Parse station from TeamCen (e.g. "TEAM-Cocina")
         var stationName = request.TeamCen.Replace("TEAM-", "");
         if (!Enum.TryParse<Station>(stationName, true, out var station))
-            return new List<KdsItemContractResponse>();
+            throw new ArgumentException($"La estación '{stationName}' no es válida.");
 
         var tickets = await ticketRepository.GetDailyTicketsAsync(request.CompanyCen, cancellationToken);
         

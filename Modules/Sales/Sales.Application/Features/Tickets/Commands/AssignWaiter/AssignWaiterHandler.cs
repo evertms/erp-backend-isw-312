@@ -28,7 +28,7 @@ public class AssignWaiterHandler(
         return new AssignTicketWaiterContractResponse(
             ticket.Cen,
             ticket.WaiterCen,
-            "Waiter Name Placeholder" // In a real scenario, we'd lookup the name from Core
+            string.Empty
         );
     }
 }

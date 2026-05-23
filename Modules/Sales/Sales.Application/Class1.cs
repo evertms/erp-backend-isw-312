@@ -1,4 +1,4 @@
-﻿namespace Sales.Application;
+namespace Sales.Application;
 
 public class Class1
 {

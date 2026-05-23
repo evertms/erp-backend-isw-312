@@ -37,6 +37,8 @@ public class UpdateKdsItemStatusHandler(
             case "canceled":
                 // line.Cancel(); // Need to implement in domain
                 break;
+            default:
+                throw new ArgumentException($"Estado '{command.Request.Status}' no soportado.");
         }
 
         await lineRepository.UpdateAsync(line, cancellationToken);
