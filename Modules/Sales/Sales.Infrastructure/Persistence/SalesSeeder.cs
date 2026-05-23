@@ -16,7 +16,7 @@ public static class SalesSeeder
             var taxConfig = await context.TaxConfigurations.FirstOrDefaultAsync(t => t.CompanyCen == companyCen);
             if (taxConfig == null)
             {
-                taxConfig = TaxConfiguration.Create(companyCen, 13.0m);
+                taxConfig = TaxConfiguration.Create(companyCen, 0.13m);
                 context.TaxConfigurations.Add(taxConfig);
             }
 

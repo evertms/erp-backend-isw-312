@@ -17,15 +17,16 @@ public class UpdateTaxConfigurationHandler(
     public async Task<TaxConfigurationContractResponse> Handle(UpdateTaxConfigurationCommand command, CancellationToken cancellationToken)
     {
         var config = await taxRepository.GetByCompanyCenAsync(command.CompanyCen, cancellationToken);
+        var taxRate = (decimal)command.Request.GlobalTaxPercentage / 100m;
         
         if (config == null)
         {
-            config = Sales.Domain.Entities.TaxConfiguration.Create(command.CompanyCen, (decimal)command.Request.GlobalTaxPercentage);
+            config = Sales.Domain.Entities.TaxConfiguration.Create(command.CompanyCen, taxRate);
             await taxRepository.AddAsync(config, cancellationToken);
         }
         else
         {
-            config.Update((decimal)command.Request.GlobalTaxPercentage);
+            config.Update(taxRate);
             await taxRepository.UpdateAsync(config, cancellationToken);
         }
 
@@ -33,7 +34,7 @@ public class UpdateTaxConfigurationHandler(
 
         return new TaxConfigurationContractResponse(
             config.CompanyCen,
-            (double)config.GlobalTaxRate
+            (double)config.GlobalTaxRate * 100
         );
     }
 }
