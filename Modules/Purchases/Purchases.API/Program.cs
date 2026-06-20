@@ -1,5 +1,6 @@
 using Purchases.API.Endpoints;
 using Purchases.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +31,7 @@ if (app.Environment.IsDevelopment())
     using (var scope = app.Services.CreateScope())
     {
         var db = scope.ServiceProvider.GetRequiredService<Purchases.Infrastructure.Persistence.PurchasesDbContext>();
-        db.Database.EnsureCreated(); // Or db.Database.Migrate(); depending on context
+        db.Database.Migrate();
     }
     
     app.UseSwagger();
