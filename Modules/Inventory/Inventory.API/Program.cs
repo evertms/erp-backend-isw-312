@@ -68,6 +68,5 @@ app.MapInventoryEndpoints();
 app.MapDashboardEndpoints();
 app.MapWarehouseEndpoints();
 app.MapCompanyEndpoints();
-app.MapCoreModuleEndpoints();
 
 app.Run();
