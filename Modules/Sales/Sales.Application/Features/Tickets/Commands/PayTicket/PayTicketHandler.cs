@@ -18,7 +18,7 @@ public class PayTicketHandler(
     ITicketRepository ticketRepository,
     IInventoryIntegrationService inventoryService,
     IUnitOfWork unitOfWork,
-    IConfiguration configuration) : IRequestHandler<PayTicketCommand, PayTicketContractResponse>
+    ISalesConfigurationRepository salesConfigRepo) : IRequestHandler<PayTicketCommand, PayTicketContractResponse>
 {
     public async Task<PayTicketContractResponse> Handle(PayTicketCommand command, CancellationToken cancellationToken)
     {
@@ -29,8 +29,9 @@ public class PayTicketHandler(
         if (ticket.Status == TicketStatus.Paid)
             throw new InvalidOperationException("El ticket ya ha sido pagado.");
 
-        var warehouseCen = configuration["InventorySettings:DefaultWarehouseCen"] 
-            ?? throw new InvalidOperationException("La bodega por defecto no está configurada en las variables de entorno.");
+        var salesConfig = await salesConfigRepo.GetByCompanyCenAsync(command.CompanyCen, cancellationToken);
+        var warehouseCen = salesConfig?.DefaultWarehouseCen 
+            ?? throw new InvalidOperationException($"La configuración de ventas para la compañía {command.CompanyCen} no fue encontrada o no tiene una bodega por defecto.");
 
         // 1. Validar Stock (Fase 1 del 2PC)
         var validationRequest = new StockValidationContractRequest(

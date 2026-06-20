@@ -13,7 +13,6 @@ public static class MigrationExtensions
 
         await context.Database.MigrateAsync();
 
-        // Use a known CEN or let the seeder handle it.
-        // For development, we'll assume the company CEN "COM-DEV-001" exists or the seeder creates it.
-        await InventorySeeder.SeedAsync(context, "COM-DEV-001");        
-        }}
+        await InventorySeeder.SeedAsync(context);
+    }
+}

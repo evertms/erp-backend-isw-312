@@ -63,5 +63,6 @@ app.MapPaymentMethodEndpoints();
 app.MapTaxConfigurationEndpoints();
 app.MapCatalogEndpoints();
 app.MapWaitersEndpoints();
+app.MapCoreModuleEndpoints();
 
 app.Run();

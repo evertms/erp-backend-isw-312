@@ -6,9 +6,10 @@ namespace Sales.Infrastructure.Persistence;
 
 public static class SalesSeeder
 {
-    public static async Task SeedAsync(SalesDbContext context, string defaultCompanyCen)
+    public static async Task SeedAsync(SalesDbContext context)
     {
-        var companies = new[] { defaultCompanyCen, "COM-DEV-002" };
+        var companies = new[] { "COM-DEV-001", "COM-DEV-002" };
+        var index = 1;
 
         foreach (var companyCen in companies)
         {
@@ -29,6 +30,15 @@ public static class SalesSeeder
                 context.StationCategoryConfigs.Add(configCocina);
                 context.StationCategoryConfigs.Add(configBar);
             }
+
+            // 3. Configuración de Ventas (Bodega por Defecto)
+            if (!await context.SalesConfigurations.AnyAsync(s => s.CompanyCen == companyCen))
+            {
+                var salesConfig = SalesConfiguration.Create(companyCen, $"WH-DEMO-00{index}");
+                context.SalesConfigurations.Add(salesConfig);
+            }
+
+            index++;
         }
 
         await context.SaveChangesAsync();

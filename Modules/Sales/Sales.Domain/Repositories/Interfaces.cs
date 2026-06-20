@@ -37,3 +37,10 @@ public interface IUnitOfWork
     Task CommitTransactionAsync(CancellationToken cancellationToken = default);
     Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
 }
+
+public interface ISalesConfigurationRepository
+{
+    Task<SalesConfiguration?> GetByCompanyCenAsync(string companyCen, CancellationToken cancellationToken = default);
+    Task AddAsync(SalesConfiguration config, CancellationToken cancellationToken = default);
+    Task UpdateAsync(SalesConfiguration config, CancellationToken cancellationToken = default);
+}

@@ -5,43 +5,51 @@ namespace Inventory.Infrastructure.Persistence;
 
 public static class InventorySeeder
 {
-    public static async Task SeedAsync(InventoryDbContext context, string defaultCompanyCen)
+    public static async Task SeedAsync(InventoryDbContext context)
     {
-        // 1. Seed Categorías
-        if (!await context.Categories.AnyAsync(c => c.CompanyCen == defaultCompanyCen))
+        var companies = new[] { "COM-DEV-001", "COM-DEV-002" };
+        var index = 1;
+
+        foreach (var companyCen in companies)
         {
-            var categories = new[]
+            // 1. Seed Categorías
+            if (!await context.Categories.AnyAsync(c => c.CompanyCen == companyCen))
             {
-                Category.Create(defaultCompanyCen, "Bebidas", "Gaseosas, jugos y bebidas alcohólicas"),
-                Category.Create(defaultCompanyCen, "Comidas", "Platos principales y entradas"),
-                Category.Create(defaultCompanyCen, "Postres", "Dulces y helados")
-            };
+                var categories = new[]
+                {
+                    Category.Create(companyCen, "Bebidas", "Gaseosas, jugos y bebidas alcohólicas"),
+                    Category.Create(companyCen, "Comidas", "Platos principales y entradas"),
+                    Category.Create(companyCen, "Postres", "Dulces y helados")
+                };
 
-            context.Categories.AddRange(categories);
-            await context.SaveChangesAsync();
-        }
+                context.Categories.AddRange(categories);
+            }
 
-        // 2. Seed Unidades
-        if (!await context.Units.AnyAsync(u => u.CompanyCen == defaultCompanyCen))
-        {
-            var units = new[]
+            // 2. Seed Unidades
+            if (!await context.Units.AnyAsync(u => u.CompanyCen == companyCen))
             {
-                Unit.Create(defaultCompanyCen, "Unidad", "UN"),
-                Unit.Create(defaultCompanyCen, "Litro", "LT"),
-                Unit.Create(defaultCompanyCen, "Kilogramo", "KG"),
-                Unit.Create(defaultCompanyCen, "Porción", "POR")
-            };
+                var units = new[]
+                {
+                    Unit.Create(companyCen, "Unidad", "UN"),
+                    Unit.Create(companyCen, "Litro", "LT"),
+                    Unit.Create(companyCen, "Kilogramo", "KG"),
+                    Unit.Create(companyCen, "Porción", "POR")
+                };
 
-            context.Units.AddRange(units);
-            await context.SaveChangesAsync();
+                context.Units.AddRange(units);
+            }
+
+            // 3. Seed Almacenes
+            if (!await context.Warehouses.AnyAsync(w => w.CompanyCen == companyCen))
+            {
+                var warehouseCen = $"WH-DEMO-00{index}";
+                var warehouse = Warehouse.CreateWithCen(warehouseCen, companyCen, $"Almacén Principal {index}", "Almacén central del restaurante");
+                context.Warehouses.Add(warehouse);
+            }
+
+            index++;
         }
 
-        // 3. Seed Almacenes
-        if (!await context.Warehouses.AnyAsync(w => w.CompanyCen == defaultCompanyCen))
-        {
-            var warehouse = Warehouse.Create(defaultCompanyCen, "Almacén Principal", "Almacén central del restaurante");
-            context.Warehouses.Add(warehouse);
-            await context.SaveChangesAsync();
-        }
+        await context.SaveChangesAsync();
     }
 }

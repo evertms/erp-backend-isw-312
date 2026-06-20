@@ -18,6 +18,6 @@ public static class MigrationExtensions
         // 2. Sales Module
         var salesContext = scope.ServiceProvider.GetRequiredService<SalesDbContext>();
         await salesContext.Database.MigrateAsync();
-        await SalesSeeder.SeedAsync(salesContext, "COM-DEV-001");
+        await SalesSeeder.SeedAsync(salesContext);
     }
 }

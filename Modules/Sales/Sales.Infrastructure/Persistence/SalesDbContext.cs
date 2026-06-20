@@ -10,6 +10,7 @@ public class SalesDbContext(DbContextOptions<SalesDbContext> options) : DbContex
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<TaxConfiguration> TaxConfigurations => Set<TaxConfiguration>();
     public DbSet<StationCategoryConfig> StationCategoryConfigs => Set<StationCategoryConfig>();
+    public DbSet<SalesConfiguration> SalesConfigurations => Set<SalesConfiguration>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

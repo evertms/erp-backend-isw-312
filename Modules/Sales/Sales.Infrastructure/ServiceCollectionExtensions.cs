@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITicketLineRepository, TicketLineRepository>();
         services.AddScoped<ITaxConfigurationRepository, TaxConfigurationRepository>();
         services.AddScoped<IStationCategoryConfigRepository, StationCategoryConfigRepository>();
+        services.AddScoped<ISalesConfigurationRepository, SalesConfigurationRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // Integration Service with Resilient HttpClient
