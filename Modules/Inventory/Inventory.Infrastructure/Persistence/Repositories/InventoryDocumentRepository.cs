@@ -20,7 +20,9 @@ public class InventoryDocumentRepository(InventoryDbContext dbContext) : IInvent
         CancellationToken cancellationToken = default)
     {
         var query = dbContext.InventoryDocuments
+            .Include(d => d.Warehouse)
             .Include(d => d.Lines)
+                .ThenInclude(l => l.Product)
             .Where(d => d.CompanyCen == companyCen);
 
         if (type.HasValue)

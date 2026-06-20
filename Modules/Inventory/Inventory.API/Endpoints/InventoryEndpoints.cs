@@ -65,7 +65,7 @@ public static class InventoryEndpoints
             return Results.Ok();
         });
 
-        app.MapGet("/api/inventory/restock-events", async (System.Threading.Channels.Channel<Inventory.Application.Features.Stocks.Events.RestockEvent> channel, HttpContext context, CancellationToken ct) =>
+        app.MapGet("/api/inventory/companies/{companyCen}/restock-events", async (string companyCen, System.Threading.Channels.Channel<Inventory.Application.Features.Stocks.Events.RestockEvent> channel, HttpContext context, CancellationToken ct) =>
         {
             context.Response.Headers["Content-Type"] = "text/event-stream";
             context.Response.Headers["Cache-Control"] = "no-cache";

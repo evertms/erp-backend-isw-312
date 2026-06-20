@@ -28,11 +28,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthorization();
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.SetIsOriginAllowed(origin => true)
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 builder.Services.AddCoreModule(builder.Configuration);
@@ -57,7 +58,7 @@ if (true || app.Environment.IsDevelopment())
     });
 }
 
-app.UseCors();
+app.UseCors("AllowAll");
 app.UseAuthorization();
 
 // Map endpoints

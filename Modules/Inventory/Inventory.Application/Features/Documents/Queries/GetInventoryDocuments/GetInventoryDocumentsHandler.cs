@@ -30,7 +30,15 @@ public class GetInventoryDocumentsHandler(IInventoryDocumentRepository documentR
             $"Documento {d.Cen}",
             d.CreatedAt,
             d.Lines.Count,
-            new List<string>() // generatedMovementCens not stored in document entity directly in this implementation
+            new List<string>(), // generatedMovementCens not stored in document entity directly in this implementation
+            d.Lines.Count > 1 ? "Varios productos" : d.Lines.FirstOrDefault()?.Product?.Name,
+            d.Warehouse?.Name,
+            (double)d.Lines.Sum(l => l.Quantity),
+            d.Lines.Select(l => new InventoryDocumentLineContractDto(
+                l.Product?.Cen ?? l.ProductId.ToString(),
+                l.Product?.Name ?? l.Product?.Cen ?? l.ProductId.ToString(),
+                (double)l.Quantity
+            )).ToList()
         )).ToList();
     }
 }

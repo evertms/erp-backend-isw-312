@@ -47,6 +47,24 @@ public static class InventorySeeder
                 context.Warehouses.Add(warehouse);
             }
 
+            await context.SaveChangesAsync(); // <-- Guardar para poder obtener los IDs
+
+            // 4. Seed Products
+            if (!await context.Products.AnyAsync(p => p.CompanyCen == companyCen))
+            {
+                var categoryId = context.Categories.First(c => c.CompanyCen == companyCen).Id;
+                var unitId = context.Units.First(u => u.CompanyCen == companyCen).Id;
+
+                var products = new[]
+                {
+                    Product.Create(companyCen, categoryId, unitId, "Coca Cola 1L", 10.50m, "CC-1L", null, "https://example.com/coca.jpg", 10),
+                    Product.Create(companyCen, categoryId, unitId, "Hamburguesa Clásica", 25.00m, "HAM-CLAS", null, "https://example.com/burger.jpg", 5),
+                    Product.Create(companyCen, categoryId, unitId, "Helado de Chocolate", 15.00m, "HEL-CHOCO", null, "https://example.com/icecream.jpg", 2)
+                };
+
+                context.Products.AddRange(products);
+            }
+
             index++;
         }
 

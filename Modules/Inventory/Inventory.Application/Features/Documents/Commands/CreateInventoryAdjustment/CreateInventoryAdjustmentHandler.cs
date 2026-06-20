@@ -32,7 +32,6 @@ public class CreateInventoryAdjustmentHandler(
                 request.Request.Reason
             );
 
-            document.Confirm();
             documentRepository.Add(document);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -92,6 +91,7 @@ public class CreateInventoryAdjustmentHandler(
                 ));
             }
 
+            document.Confirm();
             await unitOfWork.SaveChangesAsync(cancellationToken);
             await unitOfWork.CommitTransactionAsync(cancellationToken);
 

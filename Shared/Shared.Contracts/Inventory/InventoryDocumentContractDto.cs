@@ -7,5 +7,15 @@ public record InventoryDocumentContractDto(
     string Title,
     DateTime CreatedAt,
     int TotalItems,
-    List<string> GeneratedMovementCens
+    List<string> GeneratedMovementCens,
+    string? ProductName = null,
+    string? WarehouseName = null,
+    double TotalQuantity = 0,
+    List<InventoryDocumentLineContractDto>? Lines = null
+);
+
+public record InventoryDocumentLineContractDto(
+    string ProductCen,
+    string ProductName,
+    double Quantity
 );

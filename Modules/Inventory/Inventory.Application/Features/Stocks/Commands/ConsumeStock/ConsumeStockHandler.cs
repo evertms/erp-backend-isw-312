@@ -35,15 +35,54 @@ public class ConsumeStockHandler(
             documentRepository.Add(document);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var movementCens = new List<string>();
-
+            var requirements = new List<StockRequirementContractDto>();
+            
+            // First pass: validate all stock
             foreach (var itemRequest in request.Request.Items)
             {
                 var product = await productRepository.GetByCenAsync(itemRequest.ProductCen, cancellationToken);
                 if (product == null || product.CompanyCen != request.CompanyCen)
                     throw new ArgumentException($"Producto {itemRequest.ProductCen} no válido.");
 
+                var stock = await stockRepository.GetStockByProductAndWarehouseAsync(product.Id, warehouse.Id, cancellationToken);
+                var currentStock = stock?.CurrentQuantity ?? 0;
                 var quantity = (decimal)itemRequest.Quantity;
+
+                if (currentStock < quantity)
+                {
+                    requirements.Add(new StockRequirementContractDto(
+                        product.Cen,
+                        product.Name,
+                        warehouse.Cen,
+                        (double)quantity,
+                        (double)currentStock,
+                        (double)(quantity - currentStock),
+                        product.Unit.Name ?? "Unidad",
+                        "Stock insuficiente"
+                    ));
+                }
+            }
+
+            if (requirements.Any())
+            {
+                await unitOfWork.RollbackTransactionAsync(cancellationToken);
+                return new StockConsumeContractResponse(
+                    false,
+                    null,
+                    null,
+                    new List<string>(),
+                    requirements
+                );
+            }
+
+            var movementCens = new List<string>();
+
+            // Second pass: actual consumption
+            foreach (var itemRequest in request.Request.Items)
+            {
+                var product = await productRepository.GetByCenAsync(itemRequest.ProductCen, cancellationToken);
+                var quantity = (decimal)itemRequest.Quantity;
+                
                 document.AddLine(product.Id, quantity);
 
                 var stock = await stockRepository.GetStockByProductAndWarehouseAsync(product.Id, warehouse.Id, cancellationToken);
