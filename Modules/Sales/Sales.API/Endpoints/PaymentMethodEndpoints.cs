@@ -8,7 +8,7 @@ public static class PaymentMethodEndpoints
     {
         var group = app.MapGroup("/api/sales/payment-methods").WithTags("PaymentMethodsContract");
 
-        group.MapGet("/", () => Results.Ok(new List<PaymentMethodContractResponse>
+        group.MapGet("", () => Results.Ok(new List<PaymentMethodContractResponse>
         {
             new("Efectivo", "Efectivo", true),
             new("Tarjeta", "Tarjeta de Crédito/Débito", true),

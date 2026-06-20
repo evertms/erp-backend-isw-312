@@ -2,6 +2,8 @@ using Inventory.API.Endpoints;
 using Inventory.API.Extensions;
 using Inventory.Infrastructure;
 using Core.Infrastructure;
+using System.Threading.Channels;
+using Inventory.Application.Features.Stocks.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,9 +38,11 @@ builder.Services.AddCors(options =>
 builder.Services.AddCoreModule(builder.Configuration);
 builder.Services.AddInventoryModule(builder.Configuration);
 
+builder.Services.AddSingleton(Channel.CreateUnbounded<RestockEvent>());
+
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (true || app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     

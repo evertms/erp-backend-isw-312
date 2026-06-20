@@ -17,7 +17,7 @@ public static class ProductEndpoints
     {
         var group = app.MapGroup("/api/inventory/companies/{companyCen}/products").WithTags("Inventory Products Contract");
 
-        group.MapPost("/", async (string companyCen, CreateProductContractRequest request, IMediator mediator) =>
+        group.MapPost("", async (string companyCen, CreateProductContractRequest request, IMediator mediator) =>
         {
             try
             {
@@ -78,7 +78,7 @@ public static class ProductEndpoints
             return result ? Results.Ok() : Results.NotFound();
         });
 
-        group.MapGet("/", async (string companyCen, [FromQuery] string? search, [FromQuery] string? categoryCen, [FromQuery] string? status, IMediator mediator) =>
+        group.MapGet("", async (string companyCen, [FromQuery] string? search, [FromQuery] string? categoryCen, [FromQuery] string? status, IMediator mediator) =>
         {
             var products = await mediator.Send(new GetCompanyProductsQuery(companyCen, search, categoryCen, status));
             return Results.Ok(products);

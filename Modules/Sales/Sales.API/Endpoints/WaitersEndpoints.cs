@@ -10,7 +10,7 @@ public static class WaitersEndpoints
     {
         var group = app.MapGroup("/api/sales/companies/{companyCen}/waiters").WithTags("WaitersContract");
 
-        group.MapGet("/", async (string companyCen, ISender sender) =>
+        group.MapGet("", async (string companyCen, ISender sender) =>
         {
             var result = await sender.Send(new GetWaitersQuery(companyCen));
             return Results.Ok(result);

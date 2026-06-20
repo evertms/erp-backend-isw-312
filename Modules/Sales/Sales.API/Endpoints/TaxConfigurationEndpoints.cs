@@ -10,12 +10,12 @@ public static class TaxConfigurationEndpoints
     {
         var group = app.MapGroup("/api/sales/companies/{companyCen}/tax-configuration").WithTags("TaxConfigurationContract");
 
-        group.MapGet("/", (string companyCen) => Results.Ok(new TaxConfigurationContractResponse(companyCen, 13.0)))
+        group.MapGet("", (string companyCen) => Results.Ok(new TaxConfigurationContractResponse(companyCen, 13.0)))
         .Produces<TaxConfigurationContractResponse>(StatusCodes.Status200OK)
         .WithName("GetTaxConfiguration")
         .WithSummary("Obtiene configuracion de impuestos");
 
-        group.MapPut("/", async (string companyCen, UpdateTaxConfigurationContractRequest request, ISender sender) =>
+        group.MapPut("", async (string companyCen, UpdateTaxConfigurationContractRequest request, ISender sender) =>
         {
             var result = await sender.Send(new UpdateTaxConfigurationCommand(companyCen, request));
             return Results.Ok(result);

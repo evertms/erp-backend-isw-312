@@ -10,7 +10,7 @@ public static class WarehouseEndpoints
     {
         var group = app.MapGroup("/api/inventory/companies/{companyCen}/warehouses").WithTags("Inventory Catalog Contract");
 
-        group.MapGet("/", async (string companyCen, IMediator mediator) =>
+        group.MapGet("", async (string companyCen, IMediator mediator) =>
         {
             var warehouses = await mediator.Send(new GetCompanyWarehousesQuery(companyCen));
             return Results.Ok(warehouses);

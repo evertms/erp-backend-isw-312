@@ -12,7 +12,7 @@ public static class UnitEndpoints
     {
         var group = app.MapGroup("/api/inventory/companies/{companyCen}/units").WithTags("Inventory Catalog Contract");
 
-        group.MapPost("/", async (string companyCen, CreateUnitContractRequest request, IMediator mediator) =>
+        group.MapPost("", async (string companyCen, CreateUnitContractRequest request, IMediator mediator) =>
         {
             try
             {
@@ -52,7 +52,7 @@ public static class UnitEndpoints
             }
         });
 
-        group.MapGet("/", async (string companyCen, IMediator mediator) =>
+        group.MapGet("", async (string companyCen, IMediator mediator) =>
         {
             var result = await mediator.Send(new GetUnitsQuery(companyCen));
             return Results.Ok(result);

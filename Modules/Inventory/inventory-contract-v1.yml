@@ -1614,6 +1614,15 @@ paths:
               schema: {}
             text/json:
               schema: {}
+  "/api/inventory/restock-events":
+    get:
+      tags:
+      - InventoryStockContract
+      summary: SSE endpoint para notificaciones de restock
+      description: Notifica al cliente cuando se incrementa el stock.
+      responses:
+        '200':
+          description: OK (Stream)
 components:
   schemas:
     CategoryContractDto:

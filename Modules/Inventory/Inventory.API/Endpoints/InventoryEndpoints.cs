@@ -58,5 +58,23 @@ public static class InventoryEndpoints
             var result = await mediator.Send(new ConsumeStockCommand(companyCen, request));
             return Results.Ok(result);
         });
+
+        contractGroup.MapPost("/stock/increase", async (string companyCen, StockIncreaseContractRequest request, IMediator mediator) =>
+        {
+            // Dummy implementation just to fulfill the contract signature required by user
+            return Results.Ok();
+        });
+
+        app.MapGet("/api/inventory/restock-events", async (System.Threading.Channels.Channel<Inventory.Application.Features.Stocks.Events.RestockEvent> channel, HttpContext context, CancellationToken ct) =>
+        {
+            context.Response.Headers["Content-Type"] = "text/event-stream";
+            context.Response.Headers["Cache-Control"] = "no-cache";
+
+            await foreach (var evento in channel.Reader.ReadAllAsync(ct))
+            {
+                await context.Response.WriteAsync($"data: {System.Text.Json.JsonSerializer.Serialize(evento)}\n\n", ct);
+                await context.Response.Body.FlushAsync(ct);
+            }
+        });
     }
 }

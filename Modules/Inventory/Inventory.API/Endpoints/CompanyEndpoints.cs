@@ -10,7 +10,7 @@ public static class CompanyEndpoints
     {
         var group = app.MapGroup("/api/inventory/companies").WithTags("Inventory Companies Contract");
 
-        group.MapGet("/", async ([FromServices] ICompanyRepository companyRepository) =>
+        group.MapGet("", async ([FromServices] ICompanyRepository companyRepository) =>
         {
             var companies = await companyRepository.GetActiveCompaniesAsync();
             return Results.Ok(companies.Select(c => new CompanyContractDto(c.Cen, c.Name, c.IsActive)).ToList());

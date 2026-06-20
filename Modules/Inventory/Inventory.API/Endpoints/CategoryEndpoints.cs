@@ -12,7 +12,7 @@ public static class CategoryEndpoints
     {
         var group = app.MapGroup("/api/inventory/companies/{companyCen}/categories").WithTags("Inventory Catalog Contract");
 
-        group.MapPost("/", async (string companyCen, CreateCategoryContractRequest request, IMediator mediator) =>
+        group.MapPost("", async (string companyCen, CreateCategoryContractRequest request, IMediator mediator) =>
         {
             try
             {
@@ -44,7 +44,7 @@ public static class CategoryEndpoints
             }
         });
 
-        group.MapGet("/", async (string companyCen, IMediator mediator) =>
+        group.MapGet("", async (string companyCen, IMediator mediator) =>
         {
             var result = await mediator.Send(new GetCategoriesQuery(companyCen));
             return Results.Ok(result);

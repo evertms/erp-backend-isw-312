@@ -10,7 +10,7 @@ public static class DashboardEndpoints
     {
         var group = app.MapGroup("/api/inventory/companies/{companyCen}/dashboard").WithTags("Inventory Catalog Contract");
 
-        group.MapGet("/", async (string companyCen, IMediator mediator) =>
+        group.MapGet("", async (string companyCen, IMediator mediator) =>
         {
             var metrics = await mediator.Send(new GetDashboardMetricsQuery(companyCen));
             return Results.Ok(metrics);

@@ -22,7 +22,7 @@ public static class TicketEndpoints
     {
         var group = app.MapGroup("/api/sales/companies/{companyCen}/tickets").WithTags("TicketsContract");
 
-        group.MapGet("/", async (string companyCen, ISender sender) =>
+        group.MapGet("", async (string companyCen, ISender sender) =>
         {
             var result = await sender.Send(new GetDailyTicketsQuery(companyCen));
             return Results.Ok(result);
@@ -31,7 +31,7 @@ public static class TicketEndpoints
         .WithName("GetDailyTickets")
         .WithSummary("Lista tickets del dia");
 
-        group.MapPost("/", async (string companyCen, CreateTicketContractRequest request, ISender sender) =>
+        group.MapPost("", async (string companyCen, CreateTicketContractRequest request, ISender sender) =>
         {
             var result = await sender.Send(new CreateTicketCommand(companyCen, request));
             return Results.Created($"/api/sales/companies/{companyCen}/tickets/{result.TicketCen}", result);
@@ -110,7 +110,7 @@ public static class TicketEndpoints
         // Items sub-group
         var itemsGroup = group.MapGroup("/{ticketCen}/items");
 
-        itemsGroup.MapGet("/", async (string companyCen, string ticketCen, ISender sender) =>
+        itemsGroup.MapGet("", async (string companyCen, string ticketCen, ISender sender) =>
         {
             var result = await sender.Send(new GetTicketItemsQuery(companyCen, ticketCen));
             return Results.Ok(result);
@@ -119,7 +119,7 @@ public static class TicketEndpoints
         .WithName("GetTicketItems")
         .WithSummary("Lista items de un ticket");
 
-        itemsGroup.MapPost("/", async (string companyCen, string ticketCen, CreateTicketItemContractRequest request, ISender sender) =>
+        itemsGroup.MapPost("", async (string companyCen, string ticketCen, CreateTicketItemContractRequest request, ISender sender) =>
         {
             var result = await sender.Send(new AddTicketLineCommand(companyCen, ticketCen, request));
             return Results.Created($"/api/sales/companies/{companyCen}/tickets/{ticketCen}/items/{result.TicketItemCen}", result);

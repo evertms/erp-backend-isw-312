@@ -3,6 +3,8 @@ using Inventory.Domain.Enums;
 using Inventory.Domain.Repositories;
 using MediatR;
 using Shared.Contracts.Inventory;
+using System.Threading.Channels;
+using Inventory.Application.Features.Stocks.Events;
 
 namespace Inventory.Application.Features.Documents.Commands.CreateInventoryDocument;
 
@@ -12,7 +14,8 @@ public class CreateInventoryDocumentHandler(
     IKardexMovementRepository kardexRepository,
     IProductRepository productRepository,
     IWarehouseRepository warehouseRepository,
-    IUnitOfWork unitOfWork) : IRequestHandler<CreateInventoryDocumentCommand, InventoryDocumentContractDto>
+    IUnitOfWork unitOfWork,
+    Channel<RestockEvent>? restockChannel = null) : IRequestHandler<CreateInventoryDocumentCommand, InventoryDocumentContractDto>
 {
     public async Task<InventoryDocumentContractDto> Handle(CreateInventoryDocumentCommand request, CancellationToken cancellationToken)
     {
@@ -64,7 +67,13 @@ public class CreateInventoryDocumentHandler(
                 };
 
                 if (movType == MovementType.In)
+                {
                     stock.AddQuantity(quantity);
+                    if (restockChannel != null)
+                    {
+                        restockChannel.Writer.TryWrite(new RestockEvent(product.Name, quantity));
+                    }
+                }
                 else
                     stock.SubtractQuantity(quantity);
 

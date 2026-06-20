@@ -3,13 +3,81 @@ services:
     image: postgres:17-alpine
     container_name: erp-postgres
     environment:
-      POSTGRES_USER: ${DB_USER:-dev_user}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
       POSTGRES_DB: erp_database
     ports:
-      - ${DB_PORT:-5432}:5432
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+  inventory-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PROJECT_PATH: Modules/Inventory/Inventory.API/Inventory.API.csproj
+    container_name: erp-inventory-api
+    command: ["dotnet", "Inventory.API.dll"]
+    environment:
+      - DB_HOST=postgres-db
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - DB_NAME=erp_database
+      - PARTNER_CORE_URL=http://core-api:8080
+    ports:
+      - "5002:8080"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+  purchases-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PROJECT_PATH: Modules/Purchases/Purchases.API/Purchases.API.csproj
+    container_name: erp-purchases-api
+    command: ["dotnet", "Purchases.API.dll"]
+    environment:
+      - DB_HOST=postgres-db
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - DB_NAME=erp_database
+      - PARTNER_CORE_URL=http://core-api:8080
+      - PARTNER_INVENTORY_URL=http://inventory-api:8080
+    ports:
+      - "5003:8080"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+  sales-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PROJECT_PATH: Modules/Sales/Sales.API/Sales.API.csproj
+    container_name: erp-sales-api
+    command: ["dotnet", "Sales.API.dll"]
+    environment:
+      - DB_HOST=postgres-db
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - DB_NAME=erp_database
+      - PARTNER_CORE_URL=http://core-api:8080
+      - PARTNER_INVENTORY_URL=http://inventory-api:8080
+    ports:
+      - "5004:8080"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
 
 volumes:
   postgres_data:
